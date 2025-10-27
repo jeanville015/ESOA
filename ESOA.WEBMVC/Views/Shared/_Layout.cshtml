@@ -1,0 +1,311 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ESOA.Web</title>
+
+    @* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> *@
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @* <link rel="stylesheet" href="~/ESOA.Web.styles.css" asp-append-version="true" /> *@
+    <link href="~/css/style.css" rel="stylesheet" />
+    @* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> *@
+    <link rel="stylesheet" href="~/lib/bootstrap-select/css/bootstrap-select.min.css" />
+    <script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <!--pagination libraries-->
+    <script src="~/js/pagination-modified/pagination.min.js"></script>
+    <link href="~/js/pagination-modified/pagination.css" rel="stylesheet" />
+    <script type="text/javascript" src="~/lib/font-awesome/js/all.min.js"></script>
+
+    <!--Select2 libraries-->
+    <link rel="stylesheet" href="~/lib/select2/css/select2.min.css" />
+    <script type="text/javascript" src="~/lib/select2/js/select2.min.js"></script>
+
+    <!--Mask/id,phone format library-->
+    <script type="text/javascript" src="~/lib/mask/jquery.mask.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script><!--cell phone number-->
+
+    <script>
+        window.Promise ||
+            document.write(
+                '<script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"><\/script>'
+            )
+        window.Promise ||
+            document.write(
+                '<script src="https://cdn.jsdelivr.net/npm/eligrey-classlist-js-polyfill@1.2.20171210/classList.min.js"><\/script>'
+            )
+        window.Promise ||
+            document.write(
+                '<script src="https://cdn.jsdelivr.net/npm/findindex_polyfill_mdn"><\/script>'
+            )
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+
+    <script>
+        // Replace Math.random() with a pseudo-random number generator to get reproducible results in e2e tests
+        // Based on https://gist.github.com/blixt/f17b47c62508be59987b
+        var _seed = 42;
+        Math.random = function () {
+            _seed = _seed * 16807 % 2147483647;
+            return (_seed - 1) / 2147483646;
+        };
+    </script> 
+</head> 
+
+<body class="sb-nav-fixed"> 
+        @*<nav class="sb-topnav navbar navbar-expand navbar-light-blue bg-light">*@
+        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-variation-1">
+            <!-- Navbar Brand-->
+            <a class="navbar-brand ps-3 text-center bg-variation-1">ELECTRONIC STATEMENT OF ACCOUNT</a>
+            <!-- Sidebar Toggle-->
+            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id ="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+
+            <!-- Navbar Search-->
+             <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+                @*<div class="input-group">
+                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+                    <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+                </div>*@
+                <div class="navbar-nav"> 
+                    <div class="nav-link"> 
+                        <b> <div id="divResults-loginUserDetails"></div></b>
+                    </div>
+                </div> 
+            </form>
+            <!-- Navbar-->
+            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li> 
+                        </li>
+                        <li> 
+                            <li><a class="dropdown-item text-center" id="btnChangePassowrd">Change Password</a></li>
+                        </li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li class="text-center"><h6>@*[User 1]*@</h6></li>
+                        <li><a class="dropdown-item text-center" asp-controller="UserAccounts" asp-action="userprofile">@*Manage Your Account*@</a></li>
+                    <li>
+                        <a class="dropdown-item text-center"  id="logout" style="cursor: pointer">Logout</a>
+                    </li>
+                </ul>
+                </li>
+            </ul>
+
+        </nav>
+        <div id="layoutSidenav" style="=height:100% !important">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-variation-1" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+                            <div class="row g-4">
+                                <div class="col-sm-12">
+                                    @*<div class="container-sm"><img src="~/images/Logo.png" class="img-fluid" alt="..."></div>*@
+                                </div>
+                                <div class="col-sm-12"> 
+                                </div>
+                            </div>
+
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">
+                                <div class="sb-nav-link-icon"><i class="fas fa-house-chimney-user"></i></div>
+                                HOME
+                            </a>
+
+                            <!---Admin module access----------------------------->
+                            <div id="divResults-adminAccessModules"></div>
+
+                            <!---Granular module access-------------------------->
+                            <div id="divResults-granularAccessModules"></div>
+
+                            <!---SOA module access------------------------------->
+                            <div id="divResults-soaAccessModules"></div>
+
+                            <!---Payment module access-------------------------->
+                            <div id="divResults-paymentAccessModules"></div>
+
+                            <!---Reports module access-------------------------->
+                            <div id="divResults-reportsAccessModules"></div>
+
+                        </div>
+                    </div>
+                    <div class="sb-sidenav-footer">
+                        <div class="small"><label></label>@*label here: *@</div>
+                        <label></label>@*labeled value*@
+                    </div>
+                </nav> 
+            </div>
+            <div id="layoutSidenav_content">
+                <main>
+                    <div class="container-fluid"> 
+                        @RenderBody() 
+                    </div>
+                </main>
+                <footer class="py-4 bg-variation-1 mt-auto">
+                    <div class="container-fluid px-4">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="label">Copyright &copy; ESOA 2024</div>
+                            <div>
+                                @* <a class="label" href="#">Privacy Policy</a> *@
+                                @* &middot; *@
+                                @* <a class="label" href="#">Terms &amp; Conditions</a> *@
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div> 
+
+        <!-- Dashboard Modal Fullscreen -->
+        <div class="modal fade" id="modal-popup-fullscreen-dashboard" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content" id="modal-content-fullscreen-dashboard">
+              
+                </div>
+            </div>
+        </div>
+
+        <!-- Add New Modal XL -->
+        <div class="modal fade" id="modal-popup-xl" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content" id="modal-content-xl">
+              
+            </div>
+          </div>
+        </div>
+
+        <!-- Add New Modal LG -->
+        <div class="modal fade" id="modal-popup-lg" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered  modal-lg">
+            <div class="modal-content" id="modal-content-lg">
+              
+            </div>
+          </div>
+        </div>
+        
+        <!-- Add New Modal -->
+        <div class="modal fade" id="modal-popup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" id="modal-content">
+              
+            </div>
+          </div>
+        </div>
+
+        <!-- modal view for file preview -->
+        <div class="modal fade" id="modal-popup-file-preview" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content" id="modal-content-file-preview">
+              
+            </div>
+          </div>
+        </div>
+
+        <!-- previous project-->
+        @* <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script> *@    @*added*@
+        <!--------------------->
+
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script src="~/lib/jquery-loading-overlay/loadingoverlay.js"></script> 
+        <script src="~/lib/sweetalert/sweetalert2.all.min.js"></script> 
+        <script type="text/javascript" src="~/lib/bootstrap-select/js/bootstrap-select.min.js"></script>
+        
+        <script src="~/js/style-script.js"></script>
+        <script src="~/js/site.js"></script>
+        
+        <script> 
+
+            $(document).ready(function () {
+
+                (function () {
+                    const idleDurationSecs = 900;    // X number of seconds //15 mins 
+                    const redirectUrl = window.location.origin; // Redirect idle users to this URL
+                    let idleTimeout; // variable to hold the timeout, do not modify
+
+                    const resetIdleTimeout = function () {
+
+                        // Clears the existing timeout
+                        if (idleTimeout) clearTimeout(idleTimeout);
+
+                        // Set a new idle timeout to load the redirectUrl after idleDurationSecs
+                        idleTimeout = setTimeout(() => location.href = redirectUrl, idleDurationSecs * 1000);
+                    };
+
+                    // Init on page load
+                    resetIdleTimeout();
+
+                    // Reset the idle timeout on any of the events listed below
+                    ['click', 'touchstart', 'mousemove'].forEach(evt =>
+                        document.addEventListener(evt, resetIdleTimeout, false)
+                    );
+
+                })();
+
+                $('#btnChangePassowrd').click(function (evt) {
+                    evt.preventDefault();
+                    $.ajax({
+                        url: '/UserAccount/ViewChangePassword'
+                        , type: 'GET'
+                        , dataType: 'html'
+                        , success: function (response) {
+                            $('#modal-content-lg').html(response);
+                            $('#modal-popup-lg').modal('show');
+                        }
+                        , error: function (response) {
+                            swal.fire('Error', 'An error occurred while processing the request to the server.', 'error');
+                        }
+                        , complete: function () {
+
+                        }
+                    });
+
+                });
+
+            }); 
+
+            function logout(){
+                //must execute here clearing of session keys in controller layer
+
+                //then redirect to login page
+                var baseURL = window.location.origin;
+                window.location = baseURL; 
+                return; 
+            }
+
+            $('#logout').click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: '/Login/Logout',
+                    type: 'POST',
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function () {
+                        //$.LoadingOverlay("show");
+                        $.LoadingOverlay("show", {
+                            image: "",
+                            custom: customElement
+                        });
+
+                    },
+                    failure: function (response) {
+                        swal({ title: "Error", text: "Error occurred while processing the request to the server", showConfirmButton: true, type: "error" });
+                    },
+                    success: function (response) {
+                        $.LoadingOverlay("hide");
+                        logout();
+                    }
+                });
+
+            });
+
+
+
+    </script>
+
+    </body>
+</html>

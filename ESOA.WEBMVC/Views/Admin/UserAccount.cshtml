@@ -1,0 +1,366 @@
+﻿@{
+    ViewBag.Title = "User Account Maintenance";
+}
+
+<div class="mt-4">
+
+    <div class="row gy-2">
+
+        <div class="col-12 text-initial">
+            <h2><a>@ViewBag.Title</a></h2>
+        </div>
+        <div class="col-12 text-initial">
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="UserAccountDetail(null);"><i class="fa fa-plus-circle"></i> Add UserAccount</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="ExportToExcelUserAccount();"><i class="fa fa-list"></i> Export to Excel</button>
+        </div>
+
+        <div class="col-12">
+
+            <div class="card text-center">
+                <div class="card-header">
+                    <div class="row g-2">
+                        <div class="col-auto">
+                            <div class="row">
+                                <div class="col-auto">
+                                    <label>Show items:</label>
+                                </div>
+                                <div class="col-auto">
+                                    <input type="number" class="form-control form-control-sm" id="page-size-select" style="width: 70px" min="5" />
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-auto">
+                            <div class="input-group input-group-sm">
+                                <input type="search" id="search-filterterm" class="form-control rounded form-control-sm search-filter" placeholder="Search for.." aria-label="Search" aria-describedby="search-addon" />
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!---->
+                    <div id="divResults"></div>
+                    <!---->
+                </div>
+                <div class="card-footer text-muted">
+                    <nav aria-label="">
+
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+    var pageNum;
+    var sortIndex;
+    var sortDirection;
+    var imageContainer = [];
+
+    $(document).ready(function () {
+        $('#page-size-select').val('10');
+
+        $('#page-size-select').on('input', function (e) {
+            searchUserAccount();
+        });
+
+        $('.search-filter').on('input', function (e) {
+            searchUserAccount();
+        });
+
+        $('#divResults')
+            .on('click',
+                '.search-sortidx',
+                function (evt) {
+                    let sortIdx = parseInt($(this).attr('data-sortindex'));
+                    sortDirection = sortIdx === sortIndex ? sortDirection === "ASC" ? "DESC" : "ASC" : "ASC";
+                    sortIndex = sortIdx;
+                    searchUserAccount();
+                });
+        searchUserAccount();
+
+    });
+
+    function ExportToExcelUserAccount() {
+        $.LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        });
+        $.ajax({
+            url: '/Admin/ExportToExcelUserAccount',
+            type: 'GET',
+            beforeSend: function () { },
+            contentType: 'application/json; charset=utf-8',
+            datatype: 'json',
+            success: function (response) {
+                swal.fire("Success!", "List of Request excel file will be exported to your downloads folder", "success")
+                    .then(() => {
+                        window.location = '@Url.Action("ExportToExcelUserAccount", "Admin")';
+                    });
+            },
+            failure: function (errMsg) {
+                swal.fire("Error", "Operation failed.", "error");
+            },
+            complete: function () {
+                $.LoadingOverlay('hide');
+            }
+        });
+    }
+
+    function switchStatus(fieldName, id, value, ctrl) {
+        let strValue;
+        if (value) {
+            strValue = 'true'
+        } else {
+            strValue = 'false'
+        }
+        swal.fire({
+            title: "Confirm Activation/Deactivation",
+            text: "",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willProceed) => {
+                if (willProceed) {
+                    saveUserAccountNvp(fieldName, id, strValue);
+                }
+                else {
+                    //swal.fire("No changes made.");
+                    if (value) {
+                        $(ctrl).prop('checked', false);
+                    } else {
+                        $(ctrl).prop('checked', true);
+                    }
+                }
+            });
+    }
+
+    function searchUserAccount(options = null) {
+        let pagination = getPagination(options);
+        let request = Object.assign(pagination, {
+            FilterTerm: $('#search-filterterm').val()
+        });
+
+        $('#divResults').LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        });
+
+        $.ajax({
+            url: '/Admin/SearchUserAccount'
+            , type: 'POST'
+            , contentType: 'application/json; charset=utf-8;'
+            , data: JSON.stringify(request)
+            , dataType: 'html'
+            , success: function (response) {
+                $('#divResults').html(response);
+                setPaginator(pagination);
+            }
+            , complete: function () {
+                $('#divResults').LoadingOverlay('hide');
+            }
+        });
+    }
+
+    function getPagination(options) {
+        pageNum = options ? options.current : 1;
+        let pageSize = parseInt($('#page-size-select').val() || 10);
+        let pagination = {
+            StartRowNumber: pageSize * (pageNum - 1) + 1
+            , EndRowNumber: pageNum * pageSize
+            , PageSize: pageSize
+            , SortIndex: sortIndex
+            , SortDirection: sortDirection
+        };
+
+        return pagination;
+    }
+
+    function setPaginator(pagination) {
+        let totalRows = $('#TotalRows').val();
+        $('.pagination').pagination({
+            total: totalRows,
+            current: pageNum,
+            length: pagination.PageSize,
+            size: 100,
+            click: function (options, $target) {
+                searchUserAccount(options);
+            }
+        });
+    }
+
+    function UserAccountDetail(userAccountId) {
+        openUserAccountDetailModal(userAccountId);
+    }
+
+    function openUserAccountDetailModal(userAccountId) {
+        $.LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        });
+        $.ajax({
+            url: '/Admin/GetUserAccount'
+            , type: 'GET'
+            , dataType: 'html'
+            , data: { userAccountId: userAccountId }
+            , success: function (response) {
+                $('#modal-content-xl').html(response);
+                $('#modal-popup-xl').modal('show');
+            }
+            , error: function (response) {
+                swal.fire('Error', 'An error occurred while processing the request to the server.', 'error');
+            }
+            , complete: function () {
+                $.LoadingOverlay('hide');
+            }
+        });
+    }
+
+    function saveUserAccountDetails(e) {
+        $.LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        });
+
+        var formdata = new FormData();
+
+        var formParams = $("#frmUserAccountDtl").serializeArray();
+        $.each(formParams, function (i, val) {
+            formdata.append(val.name, val.value);
+        });
+        $.ajax({
+            url: '/Admin/UpdateUserAccount',
+            type: 'POST',
+            data: formdata,
+            processData: false,
+            contentType: false,
+            //  dataType: "html",
+            beforeSend: function () {
+            },
+            success: function (response) {
+                $.LoadingOverlay('hide');
+                performValidation(response);
+            },
+            failure: function (errMsg) {
+                $.LoadingOverlay('hide');
+                swal.fire("Error", errMsg, "error");
+                searchUserAccount();
+            }
+        });
+    }
+
+    function addNewUserAccountDetails(e) {
+        $.LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        });
+
+        var formdata = new FormData();
+
+        var formParams = $("#frmUserAccountDtl").serializeArray();
+        $.each(formParams, function (i, val) {
+            formdata.append(val.name, val.value);
+        });
+
+        for (var i = 0; i < imageContainer.length; i++) {
+            var abc = imageContainer[i];
+            if (abc != null && abc !== "") {
+                formdata.append("files", abc);
+            }
+        }
+        $.ajax({
+            url: '/Admin/AddUserAccount',
+            type: 'POST',
+            data: formdata,
+            processData: false,
+            contentType: false,
+            //  dataType: "html",
+            beforeSend: function () {
+            },
+            success: function (response) {
+                $.LoadingOverlay('hide');
+                performValidation(response);
+            },
+            failure: function (errMsg) {
+                $.LoadingOverlay('hide');
+                swal.fire("Error", errMsg, "error");
+                searchUserAccount();
+            }
+        });
+    }
+
+    function confirmDelete(id){
+        let name = 'isDeleted';
+        let value = '1';
+        
+        swal.fire({
+            title: 'Proceed to delete?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                saveUserAccountNvp(name, value, id);
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swal.fire(
+                    'Cancelled',
+                    'delete cancelled.',
+                    'error'
+                )
+            }
+        })
+    }
+
+    function saveUserAccountNvp(name, value, id) {
+        let request = Object.assign({
+            Name: name,
+            Value: value,
+            Type: null,
+            PK: id
+        }); 
+        $.ajax({
+            type: "POST",
+            url: '/Admin/UpdateUserAccountNVP',
+            data: JSON.stringify(request),
+            contentType: "application/json; charset=utf-8",
+            // dataType: "html",
+            beforeSend: function () {
+            },
+            success: function (response) {
+                performValidation(response);
+            },
+            failure: function (errMsg) {
+                swal.fire("Error", errMsg, "error");
+                searchUserAccount();
+            }
+        });
+    }
+
+    function performValidation(response) {
+        if (!response.status) {
+            swal.fire("Error", response.reason, "error");
+        }
+        else {
+            swal.fire("Success!", "Process done.", "success")
+                .then(() => {
+                    searchUserAccount();
+                });
+            $('#modal-popup-xl').modal('hide');
+        }
+    }
+
+</script>
+
+

@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> </title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @*<link rel="stylesheet" href="~/EPDV.styles.css" asp-append-version="true" /> *@
+    <link href="~/css/style.css" rel="stylesheet" />  
+        <script type="text/javascript" src="~/lib/font-awesome/js/all.min.js"  ></script> 
+        <script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
+</head>
+<body>
+        <main role="main" >
+            @RenderBody()
+        </main>
+    <!-- Add New Modal LG -->
+    <div class="modal fade" id="modal-popup-lg" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered  modal-lg">
+            <div class="modal-content" id="modal-content-lg">
+            </div>
+        </div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-loading-overlay/loadingoverlay.js"></script>  
+    @*<script src="~/lib/sweetalert/sweetalert.min.js"></script>*@ 
+    <script src="~/lib/sweetalert/sweetalert2.all.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

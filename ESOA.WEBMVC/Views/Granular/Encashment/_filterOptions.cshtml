@@ -1,0 +1,87 @@
+﻿<div>
+    <div class="row g-2 justify-content-start">
+        <div class="col-sm-auto">
+
+            <div class="row p-1 justify-content-end">
+                <div class="col-auto">
+                    <label>Customer:</label>
+                </div>
+                <div class="col-auto">
+                    <select class="form-select form-select-sm" id="select-customer" multiple="multiple" style="width: 240px">
+                        @foreach (var item in ViewBag.CustomerList)
+                        {
+                            <option value="@item.Value">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row p-1 justify-content-end">
+                <div class="col-auto">
+                    <label>Date from:</label>
+                </div>
+                <div class="col-auto">
+                    <input id="date-from" type="date" class="form-control form-control-sm" style="width: 240px" />
+                </div>
+            </div>
+            <div class="row p-1 justify-content-end">
+                <div class="col-auto">
+                    <label>Date to:</label>
+                </div>
+                <div class="col-auto">
+                    <input id="date-to" type="date" class="form-control form-control-sm" style="width: 240px" />
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-sm-auto">
+
+            <div class="row p-1 justify-content-end">
+                <div class="col-auto">
+                    <label>Product Type:</label>
+                </div>
+                <div class="col-auto">
+                    <select class="form-select form-select-sm" id="select-product-type" style="width: 240px">
+                        @foreach (var item in ViewBag.ProductTypeList)
+                        {
+                            <option value="@item.Value">@item.Name</option>
+                        }
+                    </select>
+                </div> 
+            </div>
+            <div class="row p-1 justify-content-end">
+                <div class="col-auto">
+                    <label>Search:</label>
+                </div>
+                <div class="col-auto">
+                    <input id="search" type="search" class="form-control form-control-sm" style="width: 240px" />
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-12">
+            <button type="button" class="btn btn-sm btn-primary btn-primary-soa" onclick="ProceedExecuteFilter();"><i class="fa fa-info"></i> Search</button>
+            <button type="button" class="btn btn-sm btn-primary btn-primary-soa" onclick="Refresh();"><i class="fa fa-list"></i>Refresh</button>
+            <button type="button" class="btn btn-sm btn-primary btn-primary-soa" onclick="ExportToExcelEncashment();"><i class="fa fa-list"></i>Extract</button>
+            <button type="button" class="btn btn-sm btn-primary btn-primary-soa" onclick="Upload();"><i class="fa fa-list"></i>Upload</button>
+        </div>
+    </div> 
+</div> 
+
+
+
+<script>
+
+    $(document).ready(function () {
+        $('#select-customer').select2();
+        document.getElementById("select-product-type").selectedIndex = "-1";
+    }); 
+
+    function ProceedExecuteFilter() {
+        ExecuteFilter('no');
+    }
+
+</script>
+
+

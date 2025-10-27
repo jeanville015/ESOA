@@ -1,0 +1,42 @@
+﻿@using ESOA.Model      
+
+@model List<CustomerEmailAddress> 
+
+@if (@Model.Count > 0)
+{
+
+     <table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
+        <thead>
+            <tr class="table-secondary">
+                <th class="th-sm" style="white-space:nowrap;width:1%;"> Edit </th>
+                <th class="th-sm" style="white-space:nowrap;width:1%;"> Delete </th>
+                <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Email Address</th>
+            </tr>
+        </thead>
+        <tbody class="text-start">
+
+            @{
+                foreach (CustomerEmailAddress itm in Model)
+            {
+                <tr> 
+                    <td><a href="#" onclick="CustomerEmailAddressDetail('@itm.Id');"><i class="fas fa-edit" ></i></a></td>
+                    <td><a href="#" onclick="confirmDelete('@itm.Id');"><i class="fas fa-trash"></i></a></td>
+                    <td><label>@itm.EmailAddress</label></td>
+                </tr>
+              } 
+            } 
+        </tbody> 
+    </table>
+}
+else
+{
+    <table class="table table-bordered table-sm"> 
+        <tbody>
+            <tr>
+                <td>
+                    <h6>No data found.</h6>
+                </td>
+            </tr>
+        </tbody>
+    </table> 
+} 

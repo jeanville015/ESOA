@@ -1,0 +1,207 @@
+﻿<div class="modal-header">
+    <h5 class="modal-title" id="modal-xl-Label"> Contact Person List</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <div class="row g-2">
+        <input id="_CustomerId" type="hidden" />
+        <div class="col-12 text-initial">
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="CustomerContactPersonDetail(null);"><i class="fa fa-plus-circle"></i> Add Contact Person</button>
+        </div>
+        <div class="col-12">
+            <!---->
+            <div id="divResults-contactPerson" style="min-height:3.1rem !important;"></div>
+            <!---->
+        </div>
+    </div> 
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+       
+        searchCustomerContactPerson('@ViewBag.CustomerId');
+        $('#_CustomerId').val('@ViewBag.CustomerId');
+    });
+
+    function searchCustomerContactPerson(customerId) {
+
+        $('#divResults-contactPerson').LoadingOverlay("show", {
+            image: "",
+            custom: singleFieldLoader
+        });
+
+        $.ajax({
+            url: '/Admin/SearchCustomerContactPerson'
+            , type: 'POST'
+            , data: { customerId: customerId }
+            , dataType: 'html'
+            , success: function (response) {
+                $('#divResults-contactPerson').html(response);
+            }
+            , complete: function () {
+                $('#divResults-contactPerson').LoadingOverlay('hide');
+            }
+        });
+    } 
+
+
+    function CustomerContactPersonDetail(customerContactPersonId) {
+        $.LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        });
+        $.ajax({
+            url: '/Admin/GetCustomerContactPerson'
+            , type: 'GET'
+            , dataType: 'html'
+            , data: { customerContactPersonId: customerContactPersonId }
+            , success: function (response) {
+                $('#modal-content-lg').html(response);
+                $('#modal-popup-lg').modal('show');
+            }
+            , error: function (response) {
+                swal.fire('Error', 'An error occurred while processing the request to the server.', 'error');
+            }
+            , complete: function () {
+                $.LoadingOverlay('hide');
+            }
+        });
+    }
+
+    function saveCustomerContactPersonDetails(e) {
+
+
+        var formdata = new FormData();
+
+        var formParams = $("#frmCustomerContactPersonDtl").serializeArray();
+        $.each(formParams, function (i, val) {
+            formdata.append(val.name, val.value);
+        });
+        $.ajax({
+            url: '/Admin/UpdateCustomerContactPerson',
+            type: 'POST',
+            data: formdata,
+            processData: false,
+            contentType: false,
+            //  dataType: "html",
+            beforeSend: function () {
+            },
+            success: function (response) {
+                performValidation(response);
+            },
+            failure: function (errMsg) {
+                swal.fire("Error", errMsg, "error");
+                searchCustomerContactPerson('@ViewBag.CustomerId');
+            }
+        });
+    }
+
+    function AddNewCustomerContactPersonDetails(e) {
+
+        var formdata = new FormData();
+
+        var formParams = $("#frmCustomerContactPersonDtl").serializeArray();
+        $.each(formParams, function (i, val) {
+            formdata.append(val.name, val.value);
+        });
+
+        for (var i = 0; i < imageContainer.length; i++) {
+            var abc = imageContainer[i];
+            if (abc != null && abc !== "") {
+                formdata.append("files", abc);
+            }
+        }
+        $.ajax({
+            url: '/Admin/AddCustomerContactPerson',
+            type: 'POST',
+            data: formdata,
+            processData: false,
+            contentType: false,
+            //  dataType: "html",
+            beforeSend: function () {
+            },
+            success: function (response) {
+                performValidation(response);
+            },
+            failure: function (errMsg) {
+                swal.fire("Error", errMsg, "error");
+                searchCustomerContactPerson('@ViewBag.CustomerId');
+            }
+        });
+    }
+
+    function confirmDelete(id) {
+        let name = 'isDeleted';
+        let value = '1';
+
+        swal.fire({
+            title: 'Proceed to delete?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                saveCustomerContactPersonNvp(name, id, value);
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swal.fire(
+                    'Cancelled',
+                    'delete cancelled.',
+                    'error'
+                )
+            }
+        })
+    }
+
+    function saveCustomerContactPersonNvp(Name, Id, value) {
+        let request = Object.assign({
+            Name: Name,
+            Value: value,
+            Type: null,
+            PK: Id
+        });
+        $.ajax({
+            type: "POST",
+            url: '/Admin/UpdateCustomerContactPersonNVP',
+            data: JSON.stringify(request),
+            contentType: "application/json; charset=utf-8",
+            // dataType: "html",
+            beforeSend: function () {
+            },
+            success: function (response) {
+                performValidation(response);
+            },
+            failure: function (errMsg) {
+                swal.fire("Error", errMsg, "error");
+                searchCustomerContactPerson('@ViewBag.CustomerId');
+            }
+        });
+    }
+
+
+    function performValidation(response) {
+        if (!response.status) {
+            swal.fire("Error", response.reason, "error");
+        }
+        else {
+            swal.fire("Success!", "Process done.", "success")
+                .then(() => {
+                    searchCustomerContactPerson('@ViewBag.CustomerId');
+                });
+            $('#modal-popup-lg').modal('hide');
+        }
+    }
+
+</script>
+
+

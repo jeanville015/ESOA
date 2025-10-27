@@ -1,0 +1,71 @@
+﻿@using ESOA.Model
+@model CustomerDepositoryAccountNo
+
+@using (Html.BeginForm("UpdateCustomerDepositoryAccountNo", "Admin", null, FormMethod.Post, null, new { id = "frmCustomerDepositoryAccountNoDtl" }))
+{ 
+    <div class="modal-header">
+        <h5 class="modal-title" id="modal-xl-Label">Customer Depository Account No @if (Model != null) { <label> - Edit</label> } else{ <label> - Add New</label> }</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body"> 
+        <!-- body -->
+        @Html.HiddenFor(c => c.Id)
+        @Html.HiddenFor(c => c.CustomerId)
+        <div class="row g-2 gy-2" id="customerDepositoryAccountNoDetailContainer">
+            <div class="col-md-12">
+                <div class="form-floating">
+                    @Html.TextBoxFor(m => m.DepositoryAccountNo, new { @class = "form-control required-1", @placeholder = "name", @type = "text", @required = "required" })
+                    <label for="">Depository Account No.</label>
+                </div>
+            </div>
+        </div>  
+        <!-- ---- --> 
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        @if (@Model != null)
+        {
+            <button type="submit" class="btn btn-primary" id="btnSave">Save</button>
+        }
+        else
+        {
+            <button type="submit" class="btn btn-primary" id="btnAdd"> Add</button>
+        }
+        
+    </div>
+}
+
+@* <link href="~/css/_customValidation.css" rel="stylesheet" /> *@
+<script src="~/js/_customValidation.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () 
+    {
+        $('#CustomerId').val($('#_CustomerId').val());
+
+        $('#btnSave').click(function (evt) 
+        {
+            evt.preventDefault(); 
+            //custom form validation
+            validateForm($("#customerDepositoryAccountNoDetailContainer").find($("input")).length);
+            if (isFormValidated) {
+                //alert('all input was good');
+                saveCustomerDepositoryAccountNoDetails(evt);
+            } else {
+                swal.fire("Error", "Please check fields for proper input!!!.", "error");
+            }
+
+        });
+        $('#btnAdd').click(function (evt) 
+        {
+            evt.preventDefault();
+            //custom form validation
+            validateForm($("#customerDepositoryAccountNoDetailContainer").find($("input")).length);
+            if (isFormValidated) {
+                AddNewCustomerDepositoryAccountNoDetails(evt);
+            } else {
+                swal.fire("Error", "Please check fields for proper input!", "error");
+            }
+        });
+    });
+</script>

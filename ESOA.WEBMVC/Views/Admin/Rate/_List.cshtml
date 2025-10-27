@@ -1,0 +1,79 @@
+﻿@using ESOA.Model
+@using ESOA.Model.Constant
+
+@model PaginationResponse<Rate> 
+
+@if (@Model.Data.Count > 0)
+{
+    @Html.Hidden("TotalRows", @Model.TotalRows)
+    <div class="row">
+      <div class="col-12">
+        @if (Model.FilteredRows > 0)
+        {
+          <ul class="pagination mt-1"></ul>
+        }
+      </div>
+      <div class="col-12">
+        <div class="bg-gray text-right"><strong ><label id="filtered-rows">@Model.FilteredRows</label></strong> of @Model.TotalRows Rate found</div>
+      </div>   
+    </div>
+    <div class="table-responsive text-nowrap">
+        <table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
+            <thead>
+                <tr class="table-secondary">
+                    <th class="th-sm" style="white-space:nowrap;width:1%;"> Edit </th>
+                    <th class="th-sm" style="white-space:nowrap;width:1%;"> Delete </th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Reference</th> 
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">IPP</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">IPP Rate Type</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">PP/SC</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">PP/SC Rate Type</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">RTA</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">RTA Rate Type</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">SNS</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">SNS Rate Type</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">IPPX</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">IPPX Rate Type</th>
+                    <th class="th-sm search-sortidx" data-sortindex="2" style="cursor:pointer;">FROM</th>
+                    <th class="th-sm search-sortidx" data-sortindex="3" style="cursor:pointer;">TO</th>
+                </tr>
+            </thead>
+            <tbody class="text-start">
+
+                @{
+                    foreach (Rate itm in Model.Data)
+                    {
+                        <tr>
+                            <td class="text-center"><a href="#" onclick="RateDetail('@itm.Id');"><i class="fas fa-edit btn-outline-primary"></i></a></td>
+                            <td class="text-center"><a href="#" onclick="confirmDelete('@itm.Id');"><i class="fas fa-trash btn-outline-primary"></i></a></td>
+                            <td><label>@itm.Reference</label></td> 
+                            <td><label>@itm.IPP @if (@itm.RateType_IPP == RateType.Percentage) { <lable>%</lable> }</label></td>
+                            <td><label>@itm.RateType_IPP</label></td> 
+                            <td><label>@itm.PP_SC @if (@itm.RateType_PP_SC == RateType.Percentage) { <lable>%</lable> }</label></td>
+                            <td><label>@itm.RateType_PP_SC</label></td> 
+                            <td><label>@itm.RTA @if (@itm.RateType_RTA == RateType.Percentage) { <lable>%</lable> }</label></td>
+                            <td><label>@itm.RateType_RTA</label></td> 
+                            <td><label>@itm.SNS @if (@itm.RateType_SNS == RateType.Percentage) { <lable>%</lable> }</label></td>
+                            <td><label>@itm.RateType_SNS</label></td> 
+                            <td><label>@itm.IPPX @if (@itm.RateType_IPPX == RateType.Percentage) { <lable>%</lable> }</label></td>
+                            <td><label>@itm.RateType_IPPX</label></td>
+                            <td><label>@itm.From</label></td>
+                            <td><label>@itm.To</label></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <ul class="pagination pagination-secondary">
+                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                  </ul> 
+}
+else
+{
+  <h6>No data found.</h6>
+} 

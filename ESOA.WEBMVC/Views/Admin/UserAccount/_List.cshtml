@@ -1,0 +1,258 @@
+﻿@using ESOA.Model      
+
+@model PaginationResponse<UserAccount> 
+
+@if (@Model.Data.Count > 0)
+{
+    @Html.Hidden("TotalRows", @Model.TotalRows)
+    <div class="row">
+      <div class="col-12">
+        @if (Model.FilteredRows > 0)
+        {
+          <ul class="pagination mt-1"></ul>
+        }
+      </div>
+      <div class="col-12">
+        <div class="bg-gray text-right"><strong ><label id="filtered-rows">@Model.FilteredRows</label></strong> of @Model.TotalRows Users found</div>
+      </div>   
+    </div>
+    <div class="row">
+        <div class="container-fluid">
+            <div class="row flex-nowrap">
+                <div class="col-auto p-0">
+                    <div class="table-responsive text-nowrap">
+                        <table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
+                            <thead>
+                                <tr class="table-secondary">
+                                    <th class="th-sm" style="white-space:nowrap;width:1%;"> Edit </th>
+                                    <th class="th-sm" style="white-space:nowrap;width:1%;"> Delete </th>
+                                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Name</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-start">
+
+                                @{
+                                    foreach (UserAccount itm in Model.Data)
+                                    {
+                                        <tr>
+                                            <td class="text-center"><a href="#" onclick="UserAccountDetail('@itm.Id');"><i class="fas fa-edit btn-outline-primary"></i></a></td>
+                                            <td class="text-center"><a href="#" onclick="confirmDelete('@itm.Id');"><i class="fas fa-trash btn-outline-primary"></i></a></td>
+                                            <td><label>@itm.Name</label></td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col overflow-auto p-0">
+                    <div class="table-responsive text-nowrap">
+                        <table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
+                            <thead>
+                                <tr class="table-secondary">
+                                    <th class="th-sm search-sortidx" data-sortindex="1" style="cursor:pointer;">Job Title</th>
+                                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Team</th>
+                                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Role</th>
+                                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Module Access-Admin</th>
+                                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Module Access-SOA</th>
+                                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Module Access-Payment</th>
+                                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Module Access-Reports</th>
+                                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Module Access-Granular</th>
+                                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Access Rights-Admin</th>
+                                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Access Rights-SOA</th>
+                                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Access Rights-Payment</th>
+                                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Access Rights-Reports</th>
+                                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Access Rights-Granular</th>
+                                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Email Address</th>
+                                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Contact No.</th>
+                                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Updated By</th>
+                                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Last Update</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-start">
+
+                                @{
+                                    foreach (UserAccount itm in Model.Data)
+                                    {
+                                        <tr>
+                                            <td><label>@itm.JobTitle</label></td>
+                                            <td><label>@itm.Team</label></td>
+                                            <td><label>@itm.Role</label></td>
+
+                                            <td class="text-center">
+                                                <label>
+                                                    <div >
+                                                        @if (@itm.ModuleAccess_Admin)
+                                                        {
+                                                            <i class="fas fa-check-circle" style="color:green"></i>
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="fas fa-times-circle" style="color:red"></i>
+                                                        }
+                                                    </div>
+                                                </label>
+                                            </td>
+
+                                            <td class="text-center">
+                                                <label>
+                                                    <div>
+                                                        @if (@itm.ModuleAccess_SOA)
+                                                        {
+                                                            <i class="fas fa-check-circle" style="color:green"></i>
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="fas fa-times-circle" style="color:red"></i>
+                                                        }
+                                                    </div>
+                                                </label>
+                                            </td>
+
+                                            <td class="text-center">
+                                                <label>
+                                                    <div>
+                                                        @if (@itm.ModuleAccess_Payment)
+                                                        {
+                                                            <i class="fas fa-check-circle" style="color:green"></i>
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="fas fa-times-circle" style="color:red"></i>
+                                                        }
+                                                    </div>
+                                                </label>
+                                            </td>
+
+                                            <td class="text-center">
+                                                <label>
+                                                    <div>
+                                                        @if (@itm.ModuleAccess_Reports)
+                                                        {
+                                                            <i class="fas fa-check-circle" style="color:green"></i>
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="fas fa-times-circle" style="color:red"></i>
+                                                        }
+                                                    </div>
+                                                </label>
+                                            </td>
+
+                                            <td class="text-center">
+                                                <label>
+                                                    <div>
+                                                        @if (@itm.ModuleAccess_Granular)
+                                                        {
+                                                            <i class="fas fa-check-circle" style="color:green"></i>
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="fas fa-times-circle" style="color:red"></i>
+                                                        }
+                                                    </div>
+                                                </label>
+                                            </td>
+
+                                            <td class="text-center">
+                                                <label>
+                                                    <div>
+                                                        @if (@itm.AccessRights_Admin)
+                                                        {
+                                                            <i class="fas fa-check-circle" style="color:green"></i>
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="fas fa-times-circle" style="color:red"></i>
+                                                        }
+                                                    </div>
+                                                </label>
+                                            </td>
+
+                                            <td class="text-center">
+                                                <label>
+                                                    <div>
+                                                        @if (@itm.AccessRights_SOA)
+                                                        {
+                                                            <i class="fas fa-check-circle" style="color:green"></i>
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="fas fa-times-circle" style="color:red"></i>
+                                                        }
+                                                    </div>
+                                                </label>
+                                            </td>
+
+                                            <td class="text-center">
+                                                <label>
+                                                    <div>
+                                                        @if (@itm.AccessRights_Payment)
+                                                        {
+                                                            <i class="fas fa-check-circle" style="color:green"></i>
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="fas fa-times-circle" style="color:red"></i>
+                                                        }
+                                                    </div>
+                                                </label>
+                                            </td>
+
+                                            <td class="text-center">
+                                                <label>
+                                                    <div>
+                                                        @if (@itm.AccessRights_Reports)
+                                                        {
+                                                            <i class="fas fa-check-circle" style="color:green"></i>
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="fas fa-times-circle" style="color:red"></i>
+                                                        }
+                                                    </div>
+                                                </label>
+                                            </td>
+
+                                            <td class="text-center">
+                                                <label>
+                                                    <div>
+                                                        @if (@itm.AccessRights_Granular)
+                                                        {
+                                                            <i class="fas fa-check-circle" style="color:green"></i>
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="fas fa-times-circle" style="color:red"></i>
+                                                        }
+                                                    </div>
+                                                </label>
+                                            </td>
+
+                                            <td><label>@itm.EmailAddress</label></td>
+                                            <td><label>@itm.ContactNo</label></td>
+                                            <td><label>@itm.UpdatedBy_Name</label></td>
+                                            <td><label>@itm.Updated</label></td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
+
+    <ul class="pagination pagination-secondary">
+                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                  </ul> 
+}
+else
+{
+  <h6>No data found.</h6>
+} 

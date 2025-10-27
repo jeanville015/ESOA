@@ -1,0 +1,359 @@
+﻿@using ESOA.Model
+@model UserAccount
+
+@using (Html.BeginForm("UpdateUserAccount", "UserAccount", null, FormMethod.Post, null, new { id = "frmUserAccountDtl" }))
+{ 
+    <div class="modal-header">
+        <h5 class="modal-title" id="modal-xl-Label">UserAccount @if (Model != null) { <label> - Edit</label> } else{ <label> - Add New</label> }</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body"> 
+        <!-- body -->
+        <div class="row g-2 gy-2" id="userAccountDetailContainer">
+            @Html.HiddenFor(c => c.Id)  
+            <div class="col-md-12">
+                <div class="form-floating">
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control required-1", @placeholder = "name", @required = "required" })
+                    <label for="">Name</label>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-floating">
+                    @Html.TextBoxFor(m => m.JobTitle, new { @class = "form-control required-2", @placeholder = "job title", @required = "required" })
+                    <label>Job Title</label>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-floating">
+                    @Html.DropDownListFor(m => m.Team, new SelectList(ViewBag.TeamList, "Value", "Name"), new { @class = "form-control required-3", @required = "required" })
+                    <label>Team</label>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-floating">
+                    @Html.DropDownListFor(m => m.Role, new SelectList(ViewBag.RoleList, "Value", "Name"), new { @class = "form-control required-4", @required = "required" })
+                    <label>Role</label>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card" style="margin-bottom: 0.5rem;">
+                                    <div class="card-body">
+                                        <div class="form-check form-switch">
+                                            @Html.CheckBoxFor(m => m.ModuleAccess_Admin, new { @class = "form-check-input" })
+                                            <label class="form-check-label" for="flexSwitchCheckDefault">Module Access - Admin</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="form-check form-switch">
+                                            @Html.CheckBoxFor(m => m.ModuleAccess_Granular, new { @class = "form-check-input" })
+                                            <label class="form-check-label" for="flexSwitchCheckDefault">Module Access - Granular</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="card" style="margin-bottom: 0.5rem;">
+                                    <div class="card-body">
+                                        <div class="form-check form-switch">
+                                            @Html.CheckBoxFor(m => m.ModuleAccess_SOA, new { @class = "form-check-input" })
+                                            <label class="form-check-label" for="flexSwitchCheckDefault">Module Access - SOA</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="card" style="margin-bottom: 0.5rem;">
+                                    <div class="card-body">
+                                        <div class="form-check form-switch">
+                                            @Html.CheckBoxFor(m => m.ModuleAccess_Payment, new { @class = "form-check-input" })
+                                            <label class="form-check-label" for="flexSwitchCheckDefault">ModuleAccess - Payment</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="card" style="margin-bottom: 0.5rem;">
+                                    <div class="card-body">
+                                        <div class="form-check form-switch">
+                                            @Html.CheckBoxFor(m => m.ModuleAccess_Reports, new { @class = "form-check-input" })
+                                            <label class="form-check-label" for="flexSwitchCheckDefault">Module Access - Reports</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="col-md-12">
+                            <div class="card" style="margin-bottom: 0.5rem;">
+                                <div class="card-body">
+                                    <div class="form-check form-switch">
+                                        @Html.CheckBoxFor(m => m.AccessRights_Admin, new { @class = "form-check-input" })
+                                        <label class="form-check-label" for="flexSwitchCheckDefault">Access Rights - Admin</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="card" style="margin-bottom: 0.5rem;">
+                                <div class="card-body">
+                                    <div class="form-check form-switch">
+                                        @Html.CheckBoxFor(m => m.AccessRights_Granular, new { @class = "form-check-input" })
+                                        <label class="form-check-label" for="flexSwitchCheckDefault">Access Rights - Granular</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="card" style="margin-bottom: 0.5rem;">
+                                <div class="card-body">
+                                    <div class="form-check form-switch">
+                                        @Html.CheckBoxFor(m => m.AccessRights_SOA, new { @class = "form-check-input" })
+                                        <label class="form-check-label" for="flexSwitchCheckDefault">Access Rights - SOA</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="card" style="margin-bottom: 0.5rem;">
+                                <div class="card-body">
+                                    <div class="form-check form-switch">
+                                        @Html.CheckBoxFor(m => m.AccessRights_Payment, new { @class = "form-check-input" })
+                                        <label class="form-check-label" for="flexSwitchCheckDefault">Access Rights - Payment</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="card" style="margin-bottom: 0.5rem;">
+                                <div class="card-body">
+                                    <div class="form-check form-switch">
+                                        @Html.CheckBoxFor(m => m.AccessRights_Reports, new { @class = "form-check-input" })
+                                        <label class="form-check-label" for="flexSwitchCheckDefault">Access Rights - Reports</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="col-md-12">
+                            <div class="card" style="margin-bottom: 0.5rem;">
+                                <div class="card-body">
+                                    <label class="form-check-label" id="module-admin-indicator"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="card" style="margin-bottom: 0.5rem;">
+                                <div class="card-body">
+                                    <label class="form-check-label" id="module-SOA-indicator"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="card" style="margin-bottom: 0.5rem;">
+                                <div class="card-body">
+                                    <label class="form-check-label" id="module-payment-indicator"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="card" style="margin-bottom: 0.5rem;">
+                                <div class="card-body">
+                                    <label class="form-check-label" id="module-reports-indicator"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="card" style="margin-bottom: 0.5rem;">
+                                <div class="card-body">
+                                    <label class="form-check-label" id="module-granular-indicator"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-floating">
+                    @Html.TextBoxFor(m => m.EmailAddress, new { @class = "form-control required-5", @placeholder = "email address", @type = "email", @required = "required" })
+                    <label for="">Email Address</label>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-floating">
+                    @Html.TextBoxFor(m => m.ContactNo, new { @class = "form-control required-6", @placeholder = "contact no", @required = "required" })
+                    <label for="">Contact No.</label>
+                </div>
+            </div>
+        </div>  
+        <!-- ---- --> 
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        @if (@Model != null)
+        {
+            <button type="submit" class="btn btn-primary" id="btnSave">Save</button>
+        }
+        else
+        {
+            <button type="submit" class="btn btn-primary" id="btnAdd"> Add</button>
+        }
+        
+    </div>
+}
+
+@* <link href="~/css/_customValidation.css" rel="stylesheet" /> *@
+<script src="~/js/_customValidation.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () 
+    {
+        //clear all dropdownlist selection
+        if ($('#Id').val() == '') {
+            document.getElementById("JobTitle").selectedIndex = "-1";
+            document.getElementById("Team").selectedIndex = "-1";
+            document.getElementById("Role").selectedIndex = "-1";
+        }
+
+        $('#btnSave').click(function (evt) 
+        {
+            evt.preventDefault();
+            //custom form validation
+            validateForm(6);
+            if (isFormValidated) {
+                //alert('all input was good');
+                saveUserAccountDetails(evt);
+            } else {
+                swal.fire("Error", "Please check fields for proper input!!!.", "error");
+            }
+
+        });
+
+        $('#btnAdd').click(function (evt) 
+        {
+            evt.preventDefault();
+            
+            //custom form validation
+            validateForm(6);
+            if (isFormValidated) {
+                //alert('all input was good');
+                addNewUserAccountDetails(evt);
+            } else {
+                swal.fire("Error", "Please check fields for proper input!!!.", "error");
+            }
+        });
+
+        $("#Role").change(function () {
+            if ($('#Role').val() == 'Verifier')
+            {
+                $("#ModuleAccess_Admin").prop("checked", false);
+                $("#ModuleAccess_Granular").prop("checked", true);
+                $("#ModuleAccess_SOA").prop("checked", true);
+                $("#ModuleAccess_Payment").prop("checked", true);
+                $("#ModuleAccess_Reports").prop("checked", true);
+
+                $("#AccessRights_Admin").prop("checked", false);
+                $("#AccessRights_Granular").prop("checked", false);
+                $("#AccessRights_SOA").prop("checked", true); 
+                $("#AccessRights_Payment").prop("checked", true);
+                $("#AccessRights_Reports").prop("checked", false);
+
+                $("#module-admin-indicator").text("Module Access: NO, Access Rights: NO");
+                $("#module-SOA-indicator").text("Module Access: YES, Access Rights: VIEW/EDIT");
+                $("#module-payment-indicator").text("Module Access: YES, Access Rights: VIEW/EDIT");
+                $("#module-reports-indicator").text("Module Access: YES, Access Rights: VIEW");
+                $("#module-granular-indicator").text("Module Access: YES, Access Rights: VIEW");
+                
+            }
+            if ($('#Role').val() == 'Reviewer') 
+            {
+                $("#ModuleAccess_Admin").prop("checked", false);
+                $("#ModuleAccess_Granular").prop("checked", true);
+                $("#ModuleAccess_SOA").prop("checked", true);
+                $("#ModuleAccess_Payment").prop("checked", true);
+                $("#ModuleAccess_Reports").prop("checked", true);
+
+                $("#AccessRights_Admin").prop("checked", false);
+                $("#AccessRights_Granular").prop("checked", true);
+                $("#AccessRights_SOA").prop("checked", true);
+                $("#AccessRights_Payment").prop("checked", true);
+                $("#AccessRights_Reports").prop("checked", true);
+
+                $("#module-admin-indicator").text("Module Access: NO, Access Rights: NO");
+                $("#module-SOA-indicator").text("Module Access: YES, Access Rights: VIEW/EDIT");
+                $("#module-payment-indicator").text("Module Access: YES, Access Rights: VIEW/EDIT");
+                $("#module-reports-indicator").text("Module Access: YES, Access Rights: VIEW/EDIT");
+                $("#module-granular-indicator").text("Module Access: YES, Access Rights: VIEW/EDIT");
+            }
+            if ($('#Role').val() == 'Admin') {
+                $("#ModuleAccess_Admin").prop("checked", true);
+                $("#ModuleAccess_Granular").prop("checked", true);
+                $("#ModuleAccess_SOA").prop("checked", true);
+                $("#ModuleAccess_Payment").prop("checked", true);
+                $("#ModuleAccess_Reports").prop("checked", true);
+
+                $("#AccessRights_Admin").prop("checked", true);
+                $("#AccessRights_Granular").prop("checked", false);
+                $("#AccessRights_SOA").prop("checked", false);
+                $("#AccessRights_Payment").prop("checked", false);
+                $("#AccessRights_Reports").prop("checked", false);
+
+                $("#module-admin-indicator").text("Module Access: YES, Access Rights: VIEW/EDIT");
+                $("#module-SOA-indicator").text("Module Access: YES, Access Rights: VIEW");
+                $("#module-payment-indicator").text("Module Access: YES, Access Rights: VIEW");
+                $("#module-reports-indicator").text("Module Access: YES, Access Rights: VIEW");
+                $("#module-granular-indicator").text("Module Access: YES, Access Rights: VIEW");
+            }
+            if ($('#Role').val() == 'Viewer') {
+                $("#ModuleAccess_Admin").prop("checked", false);
+                $("#ModuleAccess_Granular").prop("checked", false);
+                $("#ModuleAccess_SOA").prop("checked", true);
+                $("#ModuleAccess_Payment").prop("checked", false);
+                $("#ModuleAccess_Reports").prop("checked", true);
+
+                $("#AccessRights_Admin").prop("checked", false);
+                $("#AccessRights_Granular").prop("checked", false);
+                $("#AccessRights_SOA").prop("checked", false);
+                $("#AccessRights_Payment").prop("checked", false);
+                $("#AccessRights_Reports").prop("checked", false);
+
+                $("#module-admin-indicator").text("Module Access: NO, Access Rights: NO");
+                $("#module-SOA-indicator").text("Module Access: YES, Access Rights: VIEW");
+                $("#module-payment-indicator").text("Module Access: NO, Access Rights: NO");
+                $("#module-reports-indicator").text("Module Access: YES, Access Rights: VIEW");
+                $("#module-granular-indicator").text("Module Access: NO, Access Rights: NO");
+            }
+            if ($('#Role').val() == 'Superuser') {
+                $("#ModuleAccess_Admin").prop("checked", true);
+                $("#ModuleAccess_Granular").prop("checked", true);
+                $("#ModuleAccess_SOA").prop("checked", true);
+                $("#ModuleAccess_Payment").prop("checked", true);
+                $("#ModuleAccess_Reports").prop("checked", true);
+
+                $("#AccessRights_Admin").prop("checked", true);
+                $("#AccessRights_Granular").prop("checked", false);
+                $("#AccessRights_SOA").prop("checked", true);
+                $("#AccessRights_Payment").prop("checked", true);
+                $("#AccessRights_Reports").prop("checked", false);
+
+                $("#module-admin-indicator").text("Module Access: YES, Access Rights: VIEW/EDIT");
+                $("#module-SOA-indicator").text("Module Access: YES, Access Rights: VIEW/EDIT");
+                $("#module-payment-indicator").text("Module Access: YES, Access Rights: VIEW/EDIT");
+                $("#module-reports-indicator").text("Module Access: YES, Access Rights: VIEW");
+                $("#module-granular-indicator").text("Module Access: YES, Access Rights: VIEW");
+            }
+        });
+
+    });
+
+    Inputmask("0999-999-9999").mask("#ContactNo");
+</script>

@@ -1,0 +1,74 @@
+
+--exec insert for 1st user in esoa
+
+--uat settings
+--exec [dbo].[pc_ins_useraccount]
+--	--name
+--	'Jean CLaude'
+--	--jobTitle
+--	,'Developer'
+--	--teamRole
+--	,'Team 1'
+--	--Role
+--	,'Role 1'
+--	--moduleAccess_admin
+--	,1
+--	--moduleAccess_soa
+--	,1
+--	--moduleAccess_payment
+--	,1
+--	--moduleAccess_reports
+--	,1
+--	--moduleAccess_granular
+--	,1
+--	--accessRights_admin
+--	,1
+--	--accessRights_soa
+--	,1
+--	--accessRights_payment
+--	,1
+--	--accessRights_reports
+--	,1
+--	--accessRights_granular
+--	,1
+--	--emailAddress
+--	,'jieborda@lbcexpress.com'
+--	--contactNo
+--	,'09193266317'
+--	--password
+--	,'P@ssw0rd'
+--	--created by 
+--	,'00000000-0000-0000-0000-000000000000'
+--	GO 
+
+----- SOA Format entries
+	--exec [dbo].[pc_ins_soaformat]
+	----formatname
+	--'SOA FORMAT A'
+	----created by 
+	--,'FE45A03F-6EE9-49E1-8A59-6B4CCA4FDD53'
+	--GO
+	--exec [dbo].[pc_ins_soaformat]
+	----formatname
+	--'SOA FORMAT B'
+	----created by 
+	--,'FE45A03F-6EE9-49E1-8A59-6B4CCA4FDD53'
+	--GO 
+	--exec [dbo].[pc_ins_soaformat]
+	----formatname
+	--'SOA FORMAT C'
+	----created by 
+	--,'FE45A03F-6EE9-49E1-8A59-6B4CCA4FDD53'
+	--GO
+	--exec [dbo].[pc_ins_soaformat]
+	----formatname
+	--'SOA FORMAT D'
+	----created by 
+	--,'FE45A03F-6EE9-49E1-8A59-6B4CCA4FDD53'
+	--GO
+	--exec [dbo].[pc_ins_soaformat]
+	----formatname
+	--'SOA FORMAT E'
+	----created by 
+	--,'FE45A03F-6EE9-49E1-8A59-6B4CCA4FDD53'
+	--GO 

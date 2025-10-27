@@ -1,0 +1,69 @@
+﻿@using ESOA.Model      
+
+@model List<Acceptance>
+
+<link rel="stylesheet" href="~/css/adaptive-height.css"/>
+
+    @if (@Model.Count > 0)
+    {
+    <div class="table-responsive text-nowrap tableFixHead adaptive-height-WithFiveLayerHeader">
+        @* <div class="table-responsive text-nowrap tableFixHead adaptive-height-table." style="height: 570px !important;"> *@
+        <table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
+            <thead>
+                <tr class="table-secondary">
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Tagging</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Office Code</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Origin Name</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Transaction Date</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Product Type</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Country</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Tracking Number</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Reference Number</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Encashment Branch</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Shipper Name</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Consignee Name</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Unit</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Principal Amount</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Encashment Date</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Status Code</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Status Description</th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Status </th>
+                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Encashment Branch Hub</th>
+                </tr>
+            </thead>
+            <tbody class="text-start">
+
+                @{
+                    foreach (Acceptance itm in Model)
+                    {
+                        <tr> 
+                            <td class="text-center">@itm.Tagging</td>
+                            <td class="text-center">@itm.OfficeCode</td>
+                            <td class="text-center">@itm.OriginAgentName</td>
+                            <td class="text-center">@itm.TransactionDate</td>
+                            <td class="text-center">@itm.ProductType</td>
+                            <td class="text-center">@itm.Country</td>
+                            <td class="text-center">@itm.TrackingNumber</td>
+                            <td class="text-center">@itm.ReferenceNumber</td>
+                            <td class="text-center">@itm.EncashmentBranch</td>
+                            <td class="text-center">@itm.ShipperName</td>
+                            <td class="text-center">@itm.ConsigneeName</td>
+                            <td class="text-center">@itm.Unit</td>
+                            <td>@itm.Str_PrincipalAmount</td>
+                            <td class="text-center">@itm.EncashmentDate</td>
+                            <td class="text-center">@itm.StatusCode</td>
+                            <td class="text-center">@itm.StatusDescription</td>
+                            <td class="text-center">@itm.Status</td>
+                            <td class="text-center">@itm.EncashmentBranchHub</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div> 
+    }
+    else
+    {
+      <h6>No data found.</h6>
+    } 
+

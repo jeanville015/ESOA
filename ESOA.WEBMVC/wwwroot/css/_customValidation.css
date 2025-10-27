@@ -1,0 +1,11 @@
+input:invalid, .drop-down:invalid {
+    border: 2px solid red;
+}
+
+    input:invalid:required, .drop-down:invalid:required {
+        background-color: rgba(255, 0, 0, 0.05);
+    }
+
+input:valid, .drop-down:valid {
+   /* border: 2px solid green;*/ /*disable its affecting parent controls after modal close*/
+}

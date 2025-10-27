@@ -1,0 +1,206 @@
+﻿<div class="modal-header">
+    <h5 class="modal-title" id="modal-xl-Label"> Email Address List</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <div class="row g-2">
+        <input id="_CustomerId" type="hidden" />
+        <div class="col-12 text-initial">
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="CustomerEmailAddressDetail(null);"><i class="fa fa-plus-circle"></i> Add Email Address</button>
+        </div>
+        <div class="col-12">
+            <!---->
+            <div id="divResults-emailAddress" style="min-height:3.1rem !important;"></div>
+            <!---->
+        </div>
+    </div> 
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+       
+        searchCustomerEmailAddress('@ViewBag.CustomerId');
+        $('#_CustomerId').val('@ViewBag.CustomerId');
+    });
+
+    function searchCustomerEmailAddress(customerId) {
+
+        $('#divResults-emailAddress').LoadingOverlay("show", {
+            image: "",
+            custom: singleFieldLoader
+        });
+
+        $.ajax({
+            url: '/Admin/SearchCustomerEmailAddress'
+            , type: 'POST'
+            , data: { customerId: customerId }
+            , dataType: 'html'
+            , success: function (response) {
+                $('#divResults-emailAddress').html(response);
+            }
+            , complete: function () {
+                $('#divResults-emailAddress').LoadingOverlay('hide');
+            }
+        });
+    } 
+
+
+    function CustomerEmailAddressDetail(customerEmailAddressId) {
+        $.LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        });
+        $.ajax({
+            url: '/Admin/GetCustomerEmailAddress'
+            , type: 'GET'
+            , dataType: 'html'
+            , data: { customerEmailAddressId: customerEmailAddressId }
+            , success: function (response) {
+                $('#modal-content-lg').html(response);
+                $('#modal-popup-lg').modal('show');
+            }
+            , error: function (response) {
+                swal.fire('Error', 'An error occurred while processing the request to the server.', 'error');
+            }
+            , complete: function () {
+                $.LoadingOverlay('hide');
+            }
+        });
+    }
+
+    function saveCustomerEmailAddressDetails(e) {
+
+
+        var formdata = new FormData();
+
+        var formParams = $("#frmCustomerEmailAddressDtl").serializeArray();
+        $.each(formParams, function (i, val) {
+            formdata.append(val.name, val.value);
+        });
+        $.ajax({
+            url: '/Admin/UpdateCustomerEmailAddress',
+            type: 'POST',
+            data: formdata,
+            processData: false,
+            contentType: false,
+            //  dataType: "html",
+            beforeSend: function () {
+            },
+            success: function (response) {
+                performValidation(response);
+            },
+            failure: function (errMsg) {
+                swal.fire("Error", errMsg, "error");
+                searchCustomerEmailAddress('@ViewBag.CustomerId');
+            }
+        });
+    }
+
+    function AddNewCustomerEmailAddressDetails(e) {
+
+        var formdata = new FormData();
+
+        var formParams = $("#frmCustomerEmailAddressDtl").serializeArray();
+        $.each(formParams, function (i, val) {
+            formdata.append(val.name, val.value);
+        });
+
+        for (var i = 0; i < imageContainer.length; i++) {
+            var abc = imageContainer[i];
+            if (abc != null && abc !== "") {
+                formdata.append("files", abc);
+            }
+        }
+        $.ajax({
+            url: '/Admin/AddCustomerEmailAddress',
+            type: 'POST',
+            data: formdata,
+            processData: false,
+            contentType: false,
+            //  dataType: "html",
+            beforeSend: function () {
+            },
+            success: function (response) {
+                performValidation(response);
+            },
+            failure: function (errMsg) {
+                swal.fire("Error", errMsg, "error");
+                searchCustomerEmailAddress('@ViewBag.CustomerId');
+            }
+        });
+    } 
+
+    function confirmDelete(id) {
+        let name = 'isDeleted';
+        let value = '1';
+
+        swal.fire({
+            title: 'Proceed to delete?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                saveCustomerEmailAddressNvp(name, id, value);
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swal.fire(
+                    'Cancelled',
+                    'delete cancelled.',
+                    'error'
+                )
+            }
+        })
+    }
+
+    function saveCustomerEmailAddressNvp(Name, Id, value) {
+        let request = Object.assign({
+            Name: Name,
+            Value: value,
+            Type: null,
+            PK: Id
+        });
+        $.ajax({
+            type: "POST",
+            url: '/Admin/UpdateCustomerEmailAddressNVP',
+            data: JSON.stringify(request),
+            contentType: "application/json; charset=utf-8",
+            // dataType: "html",
+            beforeSend: function () {
+            },
+            success: function (response) {
+                performValidation(response);
+            },
+            failure: function (errMsg) {
+                swal.fire("Error", errMsg, "error");
+                searchCustomerEmailAddress('@ViewBag.CustomerId');
+            }
+        });
+    }
+
+    function performValidation(response) {
+        if (!response.status) {
+            swal.fire("Error", response.reason, "error");
+        }
+        else {
+            swal.fire("Success!", "Process done.", "success")
+                .then(() => {
+                    searchCustomerEmailAddress('@ViewBag.CustomerId');
+                });
+            $('#modal-popup-lg').modal('hide');
+        }
+    }
+
+</script>
+
+

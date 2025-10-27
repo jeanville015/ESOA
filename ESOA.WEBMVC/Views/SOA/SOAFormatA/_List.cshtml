@@ -1,0 +1,279 @@
+﻿@using ESOA.Model.View
+@using ESOA.Model.Constant
+@model SOAFormatAMainView<SOAFormatAView>
+
+<link rel="stylesheet" href="~/css/adaptive-height.css" />
+
+@if (@Model.Data != null)
+{
+    <div class="row adaptive-height-WithFourLayerHeader">
+        <div class="col-12 text-center"><h5><a>@Model.CustomerName</a></h5></div>
+
+        <div class="col-2" style="padding:0 0 !important;">
+            <div class="table-responsive text-nowrap">
+                <table class="table table-bordered table-sm" cellspacing="0" width="100%">
+                    <thead>
+                        <tr class="table-secondary">
+                            <th class="th-sm align-middle">Beginning Balance</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="col-10" style="padding:0 0 !important;">
+            <div class="table-responsive text-nowrap">
+                <table class="table table-bordered table-sm" cellspacing="0" width="100%">
+                    <tbody>
+                        <tr>
+                            <td class="text-start" >@Model.BeginningBalance</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row adaptive-height-WithFourLayerHeader-SubContainer1">
+
+            <div class="col-12" style="padding:0 !important;">
+                <div class="table-responsive text-nowrap tableFixHead adaptive-height-WithFourLayerHeader-SubContainer1" style="padding:0 !important;">
+                    <table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
+                        <thead>
+                            <tr class="table-secondary">
+                                <th class="th-sm align-middle th-tableFixHead-LeftHeader" rowspan="2" style="height:66px!important; z-index: 2 !important;"> Date </th>
+                                <th class="th-sm" colspan="4">Acceptance In Unit</th>
+                                <th class="th-sm" colspan="5">Acceptance In Amount</th>
+                                <th class="th-sm" colspan="5">Service Fees</th>
+                                <th class="th-sm align-middle" rowspan="2">Withholding Tax</th>
+                                <th class="th-sm align-middle" rowspan="2">Total LBC Receivables</th>
+                                <th class="th-sm" colspan="4">Refund/Voided</th>
+                                <th class="th-sm align-middle" rowspan="2">Settlement</th>
+                                <th class="th-sm align-middle" rowspan="2">Running Balance</th>
+                                <th class="th-sm align-middle" rowspan="2">Remarks</th>
+                                <th class="th-sm align-middle" rowspan="2"> </th>
+                                <th class="th-sm align-middle" rowspan="2">Balance Per Agent</th>
+                                <th class="th-sm align-middle" rowspan="2">Variance</th>
+                                <th class="th-sm align-middle" rowspan="2">Acceptance Doc Number</th>
+                                <th class="th-sm align-middle" rowspan="2">Service Fee Doc Number</th>
+                            </tr>
+                            <tr class="table-secondary">
+                                <!--Acceptance in Unit Subheaders-->
+                                <th class="th-sm th-tableFixHead-2ndRow">IPP</th>
+                                <th class="th-sm th-tableFixHead-2ndRow">PP/SC</th>
+                                <th class="th-sm th-tableFixHead-2ndRow">RTA</th>
+                                <th class="th-sm th-tableFixHead-2ndRow">SNS</th>
+                                <!--Acceptance In Amount Subheaders-->
+                                <th class="th-sm th-tableFixHead-2ndRow">IPP</th>
+                                <th class="th-sm th-tableFixHead-2ndRow">PP/SC</th>
+                                <th class="th-sm th-tableFixHead-2ndRow">RTA</th>
+                                <th class="th-sm th-tableFixHead-2ndRow">SNS</th>
+                                <th class="th-sm th-tableFixHead-2ndRow">Total</th>
+                                <!--Service Fees Subheaders-->
+                                <th class="th-sm th-tableFixHead-2ndRow">IPP</th>
+                                <th class="th-sm th-tableFixHead-2ndRow">PP/SC</th>
+                                <th class="th-sm th-tableFixHead-2ndRow">RTA</th>
+                                <th class="th-sm th-tableFixHead-2ndRow">SNS</th>
+                                <th class="th-sm th-tableFixHead-2ndRow">Total</th>
+                                <!--Refund/Voided Subheaders-->
+                                <th class="th-sm th-tableFixHead-2ndRow">IPP</th>
+                                <th class="th-sm th-tableFixHead-2ndRow">PP/SC</th>
+                                <th class="th-sm th-tableFixHead-2ndRow">RTA</th>
+                                <th class="th-sm th-tableFixHead-2ndRow">SNS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @{
+
+                                int index = 1; 
+                                foreach (SOAFormatAView itm in Model.Data)
+                                {
+                                    <tr>
+                                        <td class="text-center th-sm th-tableFixHead-LeftHeader" style="background-color:#E2E3E5!important">@itm.Date</td>
+                                        <td class="text-center">@itm.Unit_IPP</td>
+                                        <td class="text-center">@itm.Unit_PP_SC</td>
+                                        <td class="text-center">@itm.Unit_RTA</td>
+                                        <td class="text-center">@itm.Unit_SNS</td>
+                                        <td class="text-start">@itm.Amt_IPP</td>
+                                        <td class="text-start">@itm.Amt_PP_SC</td>
+                                        <td class="text-start">@itm.Amt_RTA</td>
+                                        <td class="text-start">@itm.Amt_SNS</td>
+                                        <td class="text-start">@itm.Amt_Total</td>
+                                        <td class="text-start">@itm.Sf_IPP</td>
+                                        <td class="text-start">@itm.Sf_PP_SC</td>
+                                        <td class="text-start">@itm.Sf_RTA</td>
+                                        <td class="text-start">@itm.Sf_SNS</td>
+                                        <td class="text-start">@itm.Sf_Total</td>
+                                        <td class="text-start">
+                                            @{
+                                                var parsed = decimal.TryParse(itm.WithholdingTax, out decimal amount);
+                                            }
+                                            @(parsed
+                                            ? (amount < 0
+                                            ? $"({Math.Abs(amount):N2})"
+                                            : $"{amount:N2}")
+                                            : "Invalid amount")
+                                        </td>
+                                        <td class="text-start">
+                                            @{
+                                                var parsed2 = decimal.TryParse(itm.TotalLBCReceivable, out decimal amount2);
+                                            }
+                                            @(parsed2
+                                            ? (amount2 < 0
+                                            ? $"({Math.Abs(amount2):N2})"
+                                            : $"{amount2:N2}")
+                                            : "Invalid amount")
+                                        </td>
+                                        <td class="text-start">@itm.Rv_IPP</td>
+                                        <td class="text-start">@itm.Rv_PP_SC</td>
+                                        <td class="text-start">@itm.Rv_RTA</td>
+                                        <td class="text-start">@itm.Rv_SNS</td>
+                                        <td class="text-start">@itm.Settlement</td>
+                                        <td class="text-start">
+                                            @{
+                                                var parsed3 = decimal.TryParse(itm.RunningBalance, out decimal amount3);
+                                            }
+                                            @(parsed3
+                                            ? (amount3 < 0
+                                            ? $"({Math.Abs(amount3):N2})"
+                                            : $"{amount3:N2}")
+                                            : "Invalid amount")
+                                        </td>
+
+                                        @{
+                                            bool isUnverified = string.IsNullOrEmpty(itm.VerifiedStatus);
+                                            bool canVerify = Model.CurrentUserRole == Role.Verifier && isUnverified;
+                                            bool canReverse = Model.CurrentUserRole == Role.Reviewer && !isUnverified;
+                                        }
+
+                                        @if (isUnverified)
+                                        {
+                                            <td>
+                                                <input type="text" id="remarks_@index" value='@itm.VerifiedRemarks' class="form-control form-control-sm" style="min-width:100px;"  />
+                                            </td> 
+                                        }
+                                        else
+                                        { 
+                                            <td class="text-start">@itm.VerifiedRemarks</td> 
+                                        }
+
+                                        @if (isUnverified)
+                                        {
+                                            @if (canVerify)
+                                            {
+                                                <td>
+                                                    <button type="button" id="VerifyButton_@index" class="btn btn-primary btn-sm" onclick="Verify('@Model.CustomerName', '@itm.Date', '@index');">Verify</button>
+                                                </td>
+                                            }
+                                            else if ((Model.CurrentUserRole == Role.Reviewer) || (Model.CurrentUserRole == Role.Admin) || (Model.CurrentUserRole == Role.Superuser))
+                                            {
+                                                <td>
+                                                    <button type="button" class="btn btn-primary btn-sm" disabled>Verify</button>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>                                                
+                                            }
+                                        }
+                                        else if (@itm.VerifiedStatus != null)
+                                        {
+                                            @if (canReverse)
+                                            {
+                                                <td>
+                                                    <button type="button" id="ReverseButton_@index" class="btn btn-primary btn-sm" onclick="Reverse('@Model.CustomerName', '@itm.Date', '@index');">Reverse</button>
+                                                </td>
+                                            }
+                                            else if ((Model.CurrentUserRole == Role.Verifier) || (Model.CurrentUserRole == Role.Admin) || (Model.CurrentUserRole == Role.Superuser))
+                                            {
+                                                <td>
+                                                    <button type="button" class="btn btn-primary btn-sm" disabled>Reverse</button>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                            }
+
+                                        }
+
+                                        @{ index = index +1;}
+
+                                        <td class="text-start">@itm.BalancePerAgent</td>
+                                        <td class="text-start">@itm.Variance</td>
+                                        <td class="text-start">@itm.AcceptanceDocNumber</td>
+                                        <td class="text-start">@itm.ServiceFeeDocNumber</td>
+                                    </tr>
+                                }
+                            <td class="table-active text-center"></td>
+                            <td class="table-active text-center">@Model.Unit_IPP_Total</td>
+                            <td class="table-active text-center">@Model.Unit_PP_SC_Total</td>
+                            <td class="table-active text-center">@Model.Unit_RTA_Total</td>
+                            <td class="table-active text-center">@Model.Unit_SNS_Total</td>
+                            <td class="table-active text-start">@Model.Amt_IPP_Total</td>
+                            <td class="table-active text-start">@Model.Amt_PP_SC_Total</td>
+                            <td class="table-active text-start">@Model.Amt_RTA_Total</td>
+                            <td class="table-active text-start">@Model.Amt_SNS_Total</td>
+                            <td class="table-active text-start">@Model.Amt_Total_Total</td>
+                            <td class="table-active text-start">@Model.Sf_IPP_Total</td>
+                            <td class="table-active text-start">@Model.Sf_PP_SC_Total</td>
+                            <td class="table-active text-start">@Model.Sf_RTA_Total</td>
+                            <td class="table-active text-start">@Model.Sf_SNS_Total</td>
+                            <td class="table-active text-start">@Model.Sf_Total_Total</td>
+                            <td class="table-active text-start">
+                                @{
+                                    var parsed4 = decimal.TryParse(Model.WithholdingTax_Total, out decimal amount4);
+                                }
+                                @(parsed4
+                                ? (amount4 < 0
+                                ? $"({Math.Abs(amount4):N2})"
+                                : $"{amount4:N2}")
+                                : "Invalid amount")
+                            </td>
+                            <td class="table-active text-start">
+                                @{
+                                    var parsed5 = decimal.TryParse(Model.TotalLBCReceivable_Total, out decimal amount5);
+                                }
+                                @(parsed5
+                                ? (amount5 < 0
+                                ? $"({Math.Abs(amount5):N2})"
+                                : $"{amount5:N2}")
+                                : "Invalid amount")
+                            </td>
+                            <td class="table-active text-start">@Model.Rv_IPP_Total</td>
+                            <td class="table-active text-start">@Model.Rv_PP_SC_Total</td>
+                            <td class="table-active text-start">@Model.Rv_RTA_Total</td>
+                            <td class="table-active text-start">@Model.Rv_SNS_Total</td>
+                            <td class="table-active text-start">@Model.Settlement_Total</td>
+                            <td class="table-active text-start"></td>
+                            <td class="table-active text-start"></td>
+                            <td class="table-active text-start"></td>
+                            <td class="table-active text-start"></td>
+                            <td class="table-active text-start"></td>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div> 
+
+             
+
+        </div> 
+
+    </div>
+    <div class="row">
+        <div class="col">
+            <table class="table table-bordered table-sm" cellspacing="0" width="100%">
+                <tbody>
+                    <tr>
+                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+}
+else
+{
+  <h6>No data found.</h6>
+} 

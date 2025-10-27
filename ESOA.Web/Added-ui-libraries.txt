@@ -1,0 +1,6 @@
+-- for theme
+css/style.css
+js/style-script.js
+
+--fonts/icons
+lib/font-awesome

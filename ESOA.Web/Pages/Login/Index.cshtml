@@ -1,0 +1,204 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+@{
+       Layout = "_LayoutLogin";
+}
+
+<style>
+    body { 
+        background-image: url('images/white-bg-1.jpg') !important; 
+    }
+
+    .form-control:focus {   
+      outline: 0;
+      box-shadow: none;
+      border: 3px solid #d00149 !important;
+    }
+
+    .form-floating > .form-control:focus ~ label {
+      color: #d00149; 
+    }
+
+    .form-floating > .form-control:not(:focus) ~ label {
+      color: var(--bs-body-color); 
+    }
+</style>
+
+<section class="text-center">
+    <!-- Background image -->
+    <div class="p-5 bg-image" style="background-color: #d00149; height: 300px;">
+        <div class="row">
+            <div class="col">
+                <img class="align-content img-fluid" style="height: 100px; width: 100px;" src="~/images/lbc_logo.png" alt="">
+            </div>
+        </div>
+    </div>
+    <!-- Background image -->
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="card mx-4 mx-md-5 shadow" style="
+                margin-top: -100px;
+                background: hsla(0, 0%, 100%, 0.8); 
+                backdrop-filter: blur(30px);
+                ">
+                <div class="card-body py-5 px-md-5">
+
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-lg-8">
+                            <h2 class="fw-bold mb-5" style="color: #d00149">ELECTRONIC SYSTEM OF ACCOUNT</h2>
+                            <form>
+                                <div class="form-floating mb-3">
+                                  <input type="email" class="form-control" id="input-username" placeholder="name@example.com">
+                                  <label for="input-username">Email</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                  <input type="password" class="form-control" id="input-password" placeholder="Password">
+                                  <label for="input-password">Password</label>
+                                </div> 
+                                <!-- Submit button --> 
+                                <div class="mb-3">
+                                    <button id="btnLogin" class="btn bg-danger" style="width: 100%; color: #fff !important"> Login </button> 
+                                </div> 
+                                <div class="mb-3">
+                                    <button id="btnForgotPassword" class="btn btn-light" style="width: 100%; color: #d00149 !important">Forgot password?</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+<!-- Section: Design Block -->
+
+<script type="text/javascript"> 
+    var customElement = $("<div>", {
+        "css": {
+            "text-align": "center"
+        },
+        "class": "spinner-border text-danger spinner-border-page-load"
+    });
+
+    $('#btnForgotPassword').click(function (evt) {
+        evt.preventDefault();
+        $.ajax({
+            url: '/Login/ViewForgotPassword'
+            , type: 'GET'
+            , dataType: 'html'
+            , success: function (response) {
+                $('#modal-content-lg').html(response);
+                $('#modal-popup-lg').modal('show');
+            }
+            , error: function (response) {
+                swal.fire('Error', 'An error occurred while processing the request to the server.', 'error');
+            }
+            , complete: function () {
+
+            }
+        });
+
+    });
+
+    $('#btnLogin').click(function (e)
+    { 
+        e.preventDefault();
+        sessionStorage.clear();
+
+        var baseURL = window.location.origin;
+        var returnURL = '/Home/index';
+
+        var formdata = new FormData();
+        var data = {
+            Username: $('#input-username').val(),
+            Password: $('#input-password').val(),
+            ReturnURl: returnURL
+        };
+
+        formdata.append('Username', $('#input-username').val());
+        formdata.append('Password', $('#input-password').val());
+        formdata.append('ReturnURl', returnURL);
+
+        
+        
+        $.ajax({
+            type: "POST",
+            url: '/Login/Login',
+            type: 'POST',
+            data: formdata,
+            processData: false,
+            contentType: false,
+            beforeSend: function () {
+                //$.LoadingOverlay("show");
+                $.LoadingOverlay("show", {
+                    image       : "",
+                    custom      : customElement
+                }); 
+
+            },
+            failure: function (response) {
+                swal({ title: "Error", text: "Error occurred while processing the request to the server", showConfirmButton: true, type: "error" });
+            },
+            success: function (response) {
+                $.LoadingOverlay("hide");
+                if (response != null && response.isValidated) {
+                    if (!response.isFirstTimeLogin)
+                    {
+                        if (response.returnURL != null || response.returnURL != "") {
+                            window.location = baseURL + response.returnURL;
+                            return;
+                        }
+                        window.location = baseURL;
+                        return;
+                    }
+                    else
+                    {
+                        //redirect to change new password and modify isFirstTimeLogin to False
+                        swal.fire({
+                            title: '',
+                            text: response.message,
+                            icon: 'warning', 
+                            confirmButtonText: 'OK'
+                        }).then((result) => { 
+                            ViewChangePassword(); 
+                            $('#input-username').val('');
+                            $('#input-password').val('');
+                        })
+                    }
+                    
+                }
+
+                if (!response.isValidated) { 
+                    swal.fire("Error", response.message, "error") 
+                    return;
+                } 
+            }
+        });
+
+    });
+
+    function ViewChangePassword() { 
+        $.ajax({
+            url: '/Login/ViewChangePassword'
+            , type: 'GET' 
+            , dataType: 'html'
+            , success: function (response) {
+                $('#modal-content-lg').html(response);
+                $('#modal-popup-lg').modal('show');
+            }
+            , error: function (response) {
+                swal.fire('Error', 'An error occurred while processing the request to the server.', 'error');
+            }
+            , complete: function () {
+
+            }
+        });
+    }
+
+    
+</script>

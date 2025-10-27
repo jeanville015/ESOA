@@ -1,0 +1,223 @@
+﻿@{
+    ViewBag.Title = "SOA Format A";
+}
+
+<link rel="stylesheet" href="~/css/adaptive-height.css" />
+
+<div class="">
+
+    <div class="row module-body gy-2">
+        <div class="col-12"> 
+            <div id="divResults-filterOptions" style="min-height: 185px !important;"></div> 
+        </div>
+
+        <div class="col-12">
+
+            <div class="card text-center"> 
+                <div class="card-body">
+                    <!---->
+                    <div id="_divResults" class="adaptive-height-WithFourLayerHeader"></div>
+                    <!---->
+                </div> 
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+    var pageNum;
+    var sortIndex;
+    var sortDirection;
+    var imageContainer = [];
+
+    $(document).ready(function () { 
+        viewFilterOptions();
+        ExecuteFilter('yes');
+    });
+
+    function Verify(customerName, date, index) { 
+        var remarks = $('#remarks_' + index).val();
+        $.LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        }); 
+        $.ajax({
+            url: '/SOA/Verify'
+            , type: 'POST'
+            //, dataType: 'html'
+            , data: {
+                customerName: customerName, date: date, remarks: remarks
+            }
+            ,success: function (response) {
+                performValidation(response);
+                VerifyActionExecuted(index);
+            }
+            ,failure: function (errMsg) {
+                swal.fire("Error", "Operation failed.", "error");
+            }
+            ,complete: function () {
+                $.LoadingOverlay('hide');
+            }
+        });
+    }
+
+    function Reverse(customerName, date, index) { 
+        $.LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        });
+        $.ajax({
+            url: '/SOA/Reverse'
+            , type: 'POST'
+            //, dataType: 'html'
+            , data: {
+                customerName: customerName, date: date,
+            }
+            ,success: function (response) {
+                performValidation(response);
+                ReverseActionExecuted(index);
+            }
+            ,failure: function (errMsg) {
+                swal.fire("Error", "Operation failed.", "error");
+            }
+            ,complete: function () {
+                $.LoadingOverlay('hide');
+            }
+        });
+    }
+
+    function viewFilterOptions(options = null) {
+        $('#divResults-filterOptions').LoadingOverlay("show", {
+            image: "",
+            custom: viewLoader_4rem
+        });
+        $.ajax({
+            url: '/SOA/ViewFilterOptionsSOAFormatA'
+            , type: 'POST'
+            , contentType: 'application/json; charset=utf-8;'
+            , dataType: 'html'
+            , success: function (response) {
+                $('#divResults-filterOptions').html(response)
+            }
+            , complete: function () {
+                $('#divResults-filterOptions').LoadingOverlay('hide');
+            }
+        });
+    }
+
+    function Email() {
+        var dateTo = $('#date-to').val();
+        var dateFrom = $('#date-from').val();
+        var customers = $('#select-customer').select2('data');
+        var beginningBalance = $('#beginning-balance').val();
+        var customerNames;
+        customerNames = customers.map(function (item) {
+            return item['text'];
+        });
+
+        $.LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        });
+        $.ajax({
+            url: '/SOA/GenerateSOAFormatAEmail',
+            type: 'POST',
+            data: { Customers: customerNames, dateFrom: dateFrom, dateTo: dateTo, beginningBalance: beginningBalance },
+            //dataType: 'html',
+            success: function (response) {
+                performValidation(response);
+            },
+            failure: function (errMsg) {
+                swal.fire("Error", "Operation failed.", "error");
+            },
+            complete: function () {
+                $.LoadingOverlay('hide');
+            }
+        });
+    }
+
+    function ExportToExcelSOAFormatA() {
+        $.LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        });
+        $.ajax({
+            url: '/SOA/ExportToExcelSOAFormatA',
+            type: 'GET',
+            beforeSend: function () { },
+            contentType: 'application/json; charset=utf-8',
+            datatype: 'json',
+            success: function (response) {
+                swal.fire("Success!", "Details of SOA Format A excel file will be exported to your downloads folder", "success")
+                    .then(() => {
+                        window.location = '@Url.Action("ExportToExcelSOAFormatA", "SOA")';
+                    });
+            },
+            failure: function (errMsg) {
+                swal.fire("Error", "Operation failed.", "error");
+            },
+            complete: function () {
+                $.LoadingOverlay('hide');
+            }
+        });
+    } 
+
+    function ExecuteFilter(initialPageLoad) {
+        var dateTo = $('#date-to').val();
+        var dateFrom = $('#date-from').val();
+        var customers = $('#select-customer').select2('data'); 
+        var beginningBalance = $('#beginning-balance').val();
+        var customerNames;
+        if (initialPageLoad == 'yes') {
+
+        }
+        else {
+            customerNames = customers.map(function (item) {
+                return item['text'];
+            });
+        }
+
+        $('#_divResults').LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        });
+        $.ajax({
+            url: '/SOA/SearchSOAFormatA'
+            , type: 'POST'
+            , data: { Customers: customerNames, dateFrom: dateFrom, dateTo: dateTo, beginningBalance: beginningBalance}
+            , dataType: 'html'
+            , success: function (response) {
+                $('#_divResults').html(response);
+            }
+            , complete: function () {
+                $('#_divResults').LoadingOverlay('hide');
+            }
+        });
+    } 
+
+    function performValidation(response) {
+        if (!response.status) {
+            swal.fire("Error", response.reason, "error");
+        }
+        else {
+            swal.fire("Success!", "", "success")
+                .then(() => {
+                    //returnToHomepage();
+                });
+        }
+    }
+
+    function VerifyActionExecuted(index){
+        $("#VerifyButton_" + index).prop("disabled",true);
+    }
+
+    function ReverseActionExecuted(index){
+        console.log('reverse was executed and index is: ' + index)
+        $("#ReverseButton_" + index).prop("disabled",true);
+    }
+</script>
+
+

@@ -1,0 +1,367 @@
+﻿@{
+    ViewBag.Title = "Rate Table";
+}
+
+<div class="mt-4">
+
+    <div class="row gy-2">
+
+        <div class="col-12 text-initial">
+            <h2><a>@ViewBag.Title</a></h2>
+        </div>
+        <div class="col-12 text-initial">
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="RateDetail(null);"><i class="fa fa-plus-circle"></i> Add Rate</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="ExportToExcelRate();"><i class="fa fa-list"></i> Export to Excel</button>
+        </div>
+
+        <div class="col-12">
+
+            <div class="card text-center">
+                <div class="card-header">
+                    <div class="row g-2">
+                        <div class="col-auto">
+                            <div class="row">
+                                <div class="col-auto">
+                                    <label>Show items:</label>
+                                </div>
+                                <div class="col-auto">
+                                    <input type="number" class="form-control form-control-sm" id="page-size-select" style="width: 70px" min="5" />
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-auto">
+                            <div class="input-group input-group-sm">
+                                <input type="search" id="search-filterterm" class="form-control rounded form-control-sm search-filter" placeholder="Search for.." aria-label="Search" aria-describedby="search-addon" />
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!---->
+                    <div id="divResults"></div>
+                    <!---->
+                </div>
+                <div class="card-footer text-muted">
+                    <nav aria-label="">
+
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+    var pageNum;
+    var sortIndex;
+    var sortDirection;
+    var imageContainer = [];
+
+    $(document).ready(function () {
+        $('#page-size-select').val('10');
+
+        $('#page-size-select').on('input', function (e) {
+            searchRate();
+        });
+
+        $('.search-filter').on('input', function (e) {
+            searchRate();
+        });
+
+        $('#divResults')
+            .on('click',
+                '.search-sortidx',
+                function (evt) {
+                    let sortIdx = parseInt($(this).attr('data-sortindex'));
+                    sortDirection = sortIdx === sortIndex ? sortDirection === "ASC" ? "DESC" : "ASC" : "ASC";
+                    sortIndex = sortIdx;
+                    searchRate();
+                });
+        searchRate();
+
+    });
+
+    function ExportToExcelRate() {
+        $.LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        });
+        $.ajax({
+            url: '/Admin/ExportToExcelRate',
+            type: 'GET',
+            beforeSend: function () { },
+            contentType: 'application/json; charset=utf-8',
+            datatype: 'json',
+            success: function (response) {
+                swal.fire("Success!", "List of Rate excel file will be exported to your downloads folder", "success")
+                    .then(() => {
+                        window.location = '@Url.Action("ExportToExcelRate", "Admin")';
+                    });
+            },
+            failure: function (errMsg) {
+                swal.fire("Error", "Operation failed.", "error");
+            },
+            complete: function () {
+                $.LoadingOverlay('hide');
+            }
+        });
+    }
+
+    function switchStatus(fieldName, id, value, ctrl) {
+        let strValue;
+        if (value) {
+            strValue = 'true'
+        } else {
+            strValue = 'false'
+        }
+        swal.fire({
+            title: "Confirm Activation/Deactivation",
+            text: "",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willProceed) => {
+                if (willProceed) {
+                    saveRateNvp(fieldName, id, strValue);
+                }
+                else {
+                    //swal.fire("No changes made.");
+                    if (value) {
+                        $(ctrl).prop('checked', false);
+                    } else {
+                        $(ctrl).prop('checked', true);
+                    }
+                }
+            });
+    }
+
+    function searchRate(options = null) {
+        let pagination = getPagination(options);
+        let request = Object.assign(pagination, {
+            FilterTerm: $('#search-filterterm').val()
+        });
+
+        $('#divResults').LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        });
+
+        $.ajax({
+            url: '/Admin/SearchRate'
+            , type: 'POST'
+            , contentType: 'application/json; charset=utf-8;'
+            , data: JSON.stringify(request)
+            , dataType: 'html'
+            , success: function (response) {
+                $('#divResults').html(response);
+                setPaginator(pagination);
+            }
+            , complete: function () {
+                $('#divResults').LoadingOverlay('hide');
+            }
+        });
+    }
+
+    function getPagination(options) {
+        pageNum = options ? options.current : 1;
+        let pageSize = parseInt($('#page-size-select').val() || 10);
+        let pagination = {
+            StartRowNumber: pageSize * (pageNum - 1) + 1
+            , EndRowNumber: pageNum * pageSize
+            , PageSize: pageSize
+            , SortIndex: sortIndex
+            , SortDirection: sortDirection
+        };
+
+        return pagination;
+    }
+
+    function setPaginator(pagination) {
+        let totalRows = $('#TotalRows').val();
+        $('.pagination').pagination({
+            total: totalRows,
+            current: pageNum,
+            length: pagination.PageSize,
+            size: 100,
+            click: function (options, $target) {
+                searchRate(options);
+            }
+        });
+    }
+
+    function RateDetail(rateId) {
+        openRateDetailModal(rateId);
+    }
+
+    function openRateDetailModal(rateId) {
+        $.LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        });
+        $.ajax({
+            url: '/Admin/GetRate'
+            , type: 'GET'
+            , dataType: 'html'
+            , data: { rateId: rateId }
+            , success: function (response) {
+                $('#modal-content-xl').html(response);
+                $('#modal-popup-xl').modal('show');
+            }
+            , error: function (response) {
+                swal.fire('Error', 'An error occurred while processing the request to the server.', 'error');
+            }
+            , complete: function () {
+                $.LoadingOverlay('hide');
+            }
+        });
+    }
+
+    function saveRateDetails(e) {
+        $.LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        });
+
+        var formdata = new FormData();
+
+        var formParams = $("#frmRateDtl").serializeArray();
+        $.each(formParams, function (i, val) {
+            formdata.append(val.name, val.value);
+        });
+        $.ajax({
+            url: '/Admin/UpdateRate',
+            type: 'POST',
+            data: formdata,
+            processData: false,
+            contentType: false,
+            //  dataType: "html",
+            beforeSend: function () {
+            },
+            success: function (response) {
+                $.LoadingOverlay('hide');
+                performValidation(response);
+            },
+            failure: function (errMsg) {
+                $.LoadingOverlay('hide');
+                swal.fire("Error", errMsg, "error");
+                searchRate();
+            }
+        });
+    }
+
+    function AddNewRateDetails() {
+        $.LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        });
+
+        var formdata = new FormData();
+
+        var formParams = $("#frmRateDtl").serializeArray();
+        $.each(formParams, function (i, val) {
+            formdata.append(val.name, val.value);
+        });
+
+        for (var i = 0; i < imageContainer.length; i++) {
+            var abc = imageContainer[i];
+            if (abc != null && abc !== "") {
+                formdata.append("files", abc);
+            }
+        }
+        $.ajax({
+            url: '/Admin/AddRate',
+            type: 'POST',
+            data: formdata,
+            processData: false,
+            contentType: false,
+            //  dataType: "html",
+            beforeSend: function () {
+            },
+            success: function (response) {
+                $.LoadingOverlay('hide');
+                performValidation(response);
+            },
+            failure: function (errMsg) {
+                $.LoadingOverlay('hide');
+                swal.fire("Error", errMsg, "error");
+                searchRate();
+            }
+        });
+    }
+
+    function confirmDelete(id) {
+        let name = 'isDeleted';
+        let value = '1';
+
+        swal.fire({
+            title: 'Proceed to delete?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                saveRateNvp(name, id, value);
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swal.fire(
+                    'Cancelled',
+                    'delete cancelled.',
+                    'error'
+                )
+            }
+        })
+    }
+
+    function saveRateNvp(Name, Id, value) {
+        let request = Object.assign({
+            Name: Name,
+            Value: value,
+            Type: null,
+            PK: Id
+        });
+
+        $.ajax({
+            type: "POST",
+            url: '/Admin/UpdateRateNVP',
+            data: JSON.stringify(request),
+            contentType: "application/json; charset=utf-8",
+            // dataType: "html",
+            beforeSend: function () {
+            },
+            success: function (response) {
+                performValidation(response);
+            },
+            failure: function (errMsg) {
+                swal.fire("Error", errMsg, "error");
+                searchRate();
+            }
+        });
+    }
+
+    function performValidation(response) {
+        if (!response.status) {
+            swal.fire("Error", response.reason, "error");
+        }
+        else {
+            swal.fire("Success!", "Process done.", "success")
+                .then(() => {
+                    searchRate();
+                });
+            $('#modal-popup-xl').modal('hide');
+        }
+    }
+
+</script>
+
+

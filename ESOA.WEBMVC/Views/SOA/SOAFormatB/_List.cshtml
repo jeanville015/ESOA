@@ -1,0 +1,164 @@
+﻿@using ESOA.Model.View
+@model SOAFormatBMainView<SOAFormatBView>  
+
+@if (@Model.Data != null)
+{  
+    <div class="row">
+        <!-- LEFT PANE ==============================================================================================--> 
+        <div class="col-12 text-center"><h5><a>@Model.CustomerName</a></h5></div>
+        <div class="col-1" style="padding:0 !important;"> 
+            <div class="table-responsive text-nowrap">
+                <table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
+                    <thead >
+                        <tr class="table-secondary">
+                            <th class="th-sm align-middle" style="height:66px!important;"> Date </th>  
+                        </tr>
+                    </thead>
+                    <tbody class="text-start">
+
+                        @{
+                            foreach (SOAFormatBView itm in Model.Data)
+                            {
+                                <tr> 
+                                    <td>@itm.Date</td>
+                                </tr>
+                            }
+                            <td class="table-active"></td> 
+                        }
+                    </tbody>
+                </table>
+            </div>  
+        </div>
+
+        <!-- RIGHT/MAIN PANE-->
+        <div class="col-11" style="padding:0 !important;">
+            <div class="table-responsive text-nowrap" style="padding:0 !important;">
+                <table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
+                    <thead>
+                        <tr class="table-secondary">
+                            <th class="th-sm" colspan="4">Acceptance In Unit</th> 
+                            <th class="th-sm" colspan="5">Acceptance In Amount</th>
+                            <th class="th-sm align-middle" rowspan="2">Total LBC Receivables</th> 
+                            <th class="th-sm" colspan="4">Refund</th>
+                            <th class="th-sm align-middle" rowspan="2">Payment</th> 
+                            <th class="th-sm align-middle" rowspan="2">Running Balance</th>
+                            <th class="th-sm" colspan="4">Service Fees</th>
+                            <th class="th-sm align-middle" rowspan="2">Withholding Tax</th> 
+                            <th class="th-sm align-middle" rowspan="2">Total</th> 
+                            <th class="th-sm align-middle" rowspan="2">Running Balance</th> 
+                            <th class="th-sm align-middle" rowspan="2">Balance per Agent</th> 
+                            <th class="th-sm align-middle" rowspan="2">Variance</th> 
+                            <th class="th-sm align-middle" rowspan="2">Acceptance Doc Number</th> 
+                            <th class="th-sm align-middle" rowspan="2">Service Fee Doc Number</th> 
+                        </tr>
+                        <tr class="table-secondary">
+                            <!--Acceptance in Unit Subheaders-->
+                            <th class="th-sm">IPP</th>
+                            <th class="th-sm">PP</th>
+                            <th class="th-sm">RTA</th>
+                            <th class="th-sm">SNS</th>
+                            <!--Acceptance In Amount Subheaders-->
+                            <th class="th-sm">IPP</th>
+                            <th class="th-sm">PP</th>
+                            <th class="th-sm">RTA</th>
+                            <th class="th-sm">SNS</th>
+                            <th class="th-sm">Total</th>
+                            
+                            <!--Refund Subheaders-->
+                            <th class="th-sm">IPP</th>
+                            <th class="th-sm">PP</th>
+                            <th class="th-sm">RTA</th>
+                            <th class="th-sm">SNS</th>
+
+                            <!--Service Fees Subheaders-->
+                            <th class="th-sm">IPP</th>
+                            <th class="th-sm">PP</th>
+                            <th class="th-sm">RTA</th>
+                            <th class="th-sm">SNS</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-start">
+
+                        @{
+                            foreach (SOAFormatBView itm in Model.Data)
+                            {
+                                <tr> 
+                                    <td>@itm.Unit_IPP</td> 
+                                    <td>@itm.Unit_PP_SC</td>
+                                    <td>@itm.Unit_RTA</td>
+                                    <td>@itm.Unit_SNS</td>
+                                    <td>@itm.Amt_IPP</td>
+                                    <td>@itm.Amt_PP_SC</td>
+                                    <td>@itm.Amt_RTA</td>
+                                    <td>@itm.Amt_SNS</td>
+                                    <td>@itm.Amt_Total</td>
+                                    <td>@itm.Rv_IPP</td>
+                                    <td>@itm.Rv_PP_SC</td>
+                                    <td>@itm.Rv_RTA</td>
+                                    <td>@itm.Rv_SNS</td>
+                                    <td>@itm.Settlement</td>
+                                    <td>@itm.RunningBalance</td>
+                                    <td>@itm.Sf_IPP</td>
+                                    <td>@itm.Sf_PP_SC</td>
+                                    <td>@itm.Sf_RTA</td>
+                                    <td>@itm.Sf_SNS</td>
+                                    <td>@itm.WithholdingTax</td>
+                                    <td>@itm.Total_2nd</td>
+                                    <td>@itm.RunningBalance_2nd</td> 
+                                    <td>@itm.BalancePerAgent</td>
+                                    <td>@itm.Variance</td>
+                                    <td>@itm.AcceptanceDocNumber</td>
+                                    <td>@itm.ServiceFeeDocNumber</td>
+                                </tr>
+                            } 
+                            <td class="table-active">@Model.Unit_IPP_Total</td> 
+                            <td class="table-active">@Model.Unit_PP_SC_Total</td> 
+                            <td class="table-active">@Model.Unit_RTA_Total</td> 
+                            <td class="table-active">@Model.Unit_SNS_Total</td> 
+                            <td class="table-active">@Model.Amt_IPP_Total</td> 
+                            <td class="table-active">@Model.Amt_PP_SC_Total</td> 
+                            <td class="table-active">@Model.Amt_RTA_Total</td> 
+                            <td class="table-active">@Model.Amt_SNS_Total</td> 
+                            <td class="table-active">@Model.Total_Total</td> 
+                            <td class="table-active">@Model.Rv_IPP_Total</td>
+                            <td class="table-active">@Model.Rv_PP_SC_Total</td>
+                            <td class="table-active">@Model.Rv_RTA_Total</td>
+                            <td class="table-active">@Model.Rv_SNS_Total</td>
+                            <td class="table-active">@Model.Settlement_Total</td>
+
+                            <td class="table-active">@Model.Sf_IPP_Total</td> 
+                            <td class="table-active">@Model.Sf_PP_SC_Total</td> 
+                            <td class="table-active">@Model.Sf_RTA_Total</td> 
+                            <td class="table-active">@Model.Sf_SNS_Total</td> 
+
+                            <td class="table-active">@Model.WithholdingTax_Total</td> 
+                            <td class="table-active">@Model.Total_Total_2nd</td> 
+                            
+                            <td class="table-active"></td> 
+                            <td class="table-active"></td>
+                            <td class="table-active"></td>
+                            <td class="table-active"></td>
+                            <td class="table-active"></td>
+                        }
+                    </tbody>
+                </table>
+            </div> 
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <table class="table table-bordered table-sm" cellspacing="0" width="100%">
+                <tbody>
+                    <tr>
+                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+}
+else
+{
+  <h6>No data found.</h6>
+} 

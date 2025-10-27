@@ -1,0 +1,135 @@
+﻿@{
+    ViewBag.Title = "Agent Listing";
+}
+
+<div class="mt-4">
+
+    <div class="row gy-2">
+
+        <div class="col-12 text-initial">
+            <h2><a>@ViewBag.Title</a></h2>
+        </div>
+        <div class="col-auto text-initial"> 
+            <div id="divResults-filterOptions"></div> 
+        </div>
+
+        <div class="col-12">
+
+            <div class="card text-center">
+                <div class="card-header">
+                </div>
+                <div class="card-body">
+                    <!---->
+                    <div id="divResults"></div>
+                    <!---->
+                </div>
+                <div class="card-footer text-muted">
+                    <nav aria-label="">
+
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+    var pageNum;
+    var sortIndex;
+    var sortDirection;
+    var imageContainer = [];
+
+    $(document).ready(function () { 
+        viewFilterOptions();
+        ExecuteFilter('yes');
+    });
+
+    function viewFilterOptions(options = null) {
+        $.ajax({
+            url: '/Report/ViewFilterOptions'
+            , type: 'POST'
+            , contentType: 'application/json; charset=utf-8;'
+            , dataType: 'html'
+            , success: function (response) {
+                $('#divResults-filterOptions').html(response)
+            }
+            , complete: function () {
+
+            }
+        });
+    }
+
+    function ExportToExcelAcceptance() {
+        $.LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        });
+
+        $.ajax({
+            url: '/Granular/ExportToExcelAcceptance',
+            type: 'GET',
+            beforeSend: function () { },
+            contentType: 'application/json; charset=utf-8',
+            datatype: 'json',
+            success: function (response) {
+                swal.fire("Success!", "List of Acceptance Details excel file will be exported to your downloads folder", "success")
+                    .then(() => {
+                        window.location = '@Url.Action("ExportToExcelAcceptance", "Granular")';
+                    });
+            },
+            failure: function (errMsg) {
+                swal.fire("Error", "Operation failed.", "error");
+            },
+            complete: function () {
+                $.LoadingOverlay('hide');
+            }
+        });
+    } 
+
+    function ExecuteFilter(initialPageLoad) {
+        $('#divResults').LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        }); 
+        $.ajax({
+            url: '/Report/SearchAgentListing'
+            , type: 'POST' 
+            , data: { initialPageLoad: initialPageLoad }
+            , dataType: 'html'
+            , success: function (response) {
+                $('#divResults').html(response); 
+            }
+            , complete: function () {
+                $('#divResults').LoadingOverlay('hide');
+            }
+        });
+    }
+
+    function Upload() {
+        ViewUploadFile();
+    }
+
+    function ViewUploadFile() {
+        $.ajax({
+            url: '/Granular/ViewUploadFileAcceptance'
+            , type: 'GET'
+            , dataType: 'html'
+            , success: function (response) {
+                $('#modal-content-lg').html(response);
+                $('#modal-popup-lg').modal('show');
+            }
+            , error: function (response) {
+                swal.fire('Error', 'An error occurred while processing the request to the server.', 'error');
+            }
+            , complete: function () {
+
+            }
+        });
+    }
+
+</script>
+
+

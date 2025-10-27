@@ -1,0 +1,206 @@
+﻿<div class="modal-header">
+    <h5 class="modal-title" id="modal-xl-Label"> Depository Account No List</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <div class="row g-2">
+        <input id="_CustomerId" type="hidden" />
+        <div class="col-12 text-initial">
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="CustomerDepositoryAccountNoDetail(null);"><i class="fa fa-plus-circle"></i> Add Depository Account No</button>
+        </div>
+        <div class="col-12">
+            <!---->
+            <div id="divResults-depositoryAccountNo" style="min-height:3.1rem !important;"></div>
+            <!---->
+        </div>
+    </div> 
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+       
+        searchCustomerDepositoryAccountNo('@ViewBag.CustomerId');
+        $('#_CustomerId').val('@ViewBag.CustomerId');
+    });
+
+    function searchCustomerDepositoryAccountNo(customerId) {
+
+        $('#divResults-depositoryAccountNo').LoadingOverlay("show", {
+            image: "",
+            custom: singleFieldLoader
+        });
+
+        $.ajax({
+            url: '/Admin/SearchCustomerDepositoryAccountNo'
+            , type: 'POST'
+            , data: { customerId: customerId }
+            , dataType: 'html'
+            , success: function (response) {
+                $('#divResults-depositoryAccountNo').html(response);
+            }
+            , complete: function () {
+                $('#divResults-depositoryAccountNo').LoadingOverlay('hide');
+            }
+        });
+    } 
+
+
+    function CustomerDepositoryAccountNoDetail(customerDepositoryAccountNoId) {
+        $.LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        });
+        $.ajax({
+            url: '/Admin/GetCustomerDepositoryAccountNo'
+            , type: 'GET'
+            , dataType: 'html'
+            , data: { customerDepositoryAccountNoId: customerDepositoryAccountNoId }
+            , success: function (response) {
+                $('#modal-content-lg').html(response);
+                $('#modal-popup-lg').modal('show');
+            }
+            , error: function (response) {
+                swal.fire('Error', 'An error occurred while processing the request to the server.', 'error');
+            }
+            , complete: function () {
+                $.LoadingOverlay('hide');
+            }
+        });
+    }
+
+    function saveCustomerDepositoryAccountNoDetails(e) {
+
+
+        var formdata = new FormData();
+
+        var formParams = $("#frmCustomerDepositoryAccountNoDtl").serializeArray();
+        $.each(formParams, function (i, val) {
+            formdata.append(val.name, val.value);
+        });
+        $.ajax({
+            url: '/Admin/UpdateCustomerDepositoryAccountNo',
+            type: 'POST',
+            data: formdata,
+            processData: false,
+            contentType: false,
+            //  dataType: "html",
+            beforeSend: function () {
+            },
+            success: function (response) {
+                performValidation(response);
+            },
+            failure: function (errMsg) {
+                swal.fire("Error", errMsg, "error");
+                searchCustomerDepositoryAccountNo('@ViewBag.CustomerId');
+            }
+        });
+    }
+
+    function AddNewCustomerDepositoryAccountNoDetails(e) {
+
+        var formdata = new FormData();
+
+        var formParams = $("#frmCustomerDepositoryAccountNoDtl").serializeArray();
+        $.each(formParams, function (i, val) {
+            formdata.append(val.name, val.value);
+        });
+
+        for (var i = 0; i < imageContainer.length; i++) {
+            var abc = imageContainer[i];
+            if (abc != null && abc !== "") {
+                formdata.append("files", abc);
+            }
+        }
+        $.ajax({
+            url: '/Admin/AddCustomerDepositoryAccountNo',
+            type: 'POST',
+            data: formdata,
+            processData: false,
+            contentType: false,
+            //  dataType: "html",
+            beforeSend: function () {
+            },
+            success: function (response) {
+                performValidation(response);
+            },
+            failure: function (errMsg) {
+                swal.fire("Error", errMsg, "error");
+                searchCustomerDepositoryAccountNo('@ViewBag.CustomerId');
+            }
+        });
+    } 
+
+    function confirmDelete(id) {
+        let name = 'isDeleted';
+        let value = '1';
+
+        swal.fire({
+            title: 'Proceed to delete?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                saveCustomerDepositoryAccountNoNvp(name, id, value);
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swal.fire(
+                    'Cancelled',
+                    'delete cancelled.',
+                    'error'
+                )
+            }
+        })
+    }
+
+    function saveCustomerDepositoryAccountNoNvp(Name, Id, value) {
+        let request = Object.assign({
+            Name: Name,
+            Value: value,
+            Type: null,
+            PK: Id
+        });
+        $.ajax({
+            type: "POST",
+            url: '/Admin/UpdateCustomerDepositoryAccountNoNVP',
+            data: JSON.stringify(request),
+            contentType: "application/json; charset=utf-8",
+            // dataType: "html",
+            beforeSend: function () {
+            },
+            success: function (response) {
+                performValidation(response);
+            },
+            failure: function (errMsg) {
+                swal.fire("Error", errMsg, "error");
+                searchCustomerDepositoryAccountNo('@ViewBag.CustomerId');
+            }
+        });
+    }
+
+    function performValidation(response) {
+        if (!response.status) {
+            swal.fire("Error", response.reason, "error");
+        }
+        else {
+            swal.fire("Success!", "Process done.", "success")
+                .then(() => {
+                    searchCustomerDepositoryAccountNo('@ViewBag.CustomerId');
+                });
+            $('#modal-popup-lg').modal('hide');
+        }
+    }
+
+</script>
+
+

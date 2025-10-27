@@ -1,0 +1,147 @@
+﻿@{
+    ViewBag.Title = "Acceptance Details";
+}
+
+<div class="">
+
+    <div class="row module-body gy-2">
+
+        <div class="col-12 text-center">
+            <h2><a>Acceptance</a></h2>
+        </div>
+        <div class="col-12">
+            <div id="divResults-filterOptions" style="min-height: 163px !important;"></div>
+        </div>
+
+        <div class="col-12">
+
+            <div class="card text-center">
+                <div class="card-body">
+                    <!---->
+                    <div id="divResults" style="min-height: 570px !important;"></div>
+                    <!---->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+    var pageNum;
+    var sortIndex;
+    var sortDirection;
+    var imageContainer = [];
+
+    $(document).ready(function () { 
+        viewFilterOptions();
+        ExecuteFilter('yes');
+    });
+
+    function viewFilterOptions(options = null) {
+        $('#divResults-filterOptions').LoadingOverlay("show", {
+            image: "",
+            custom: viewLoader_4rem
+        });
+        $.ajax({
+            url: '/Granular/ViewFilterOptionsEncashment'
+            , type: 'POST'
+            , contentType: 'application/json; charset=utf-8;'
+            , dataType: 'html'
+            , success: function (response) {
+                $('#divResults-filterOptions').html(response)
+            }
+            , complete: function () {
+                $('#divResults-filterOptions').LoadingOverlay('hide');
+            }
+        });
+    }
+
+    function ExportToExcelEncashment() {
+        $.LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        });
+
+        $.ajax({
+            url: '/Granular/ExportToExcelEncashment',
+            type: 'GET',
+            beforeSend: function () { },
+            contentType: 'application/json; charset=utf-8',
+            datatype: 'json',
+            success: function (response) {
+                swal.fire("Success!", "List of Encashment Details excel file will be exported to your downloads folder", "success")
+                    .then(() => {
+                        window.location = '@Url.Action("ExportToExcelEncashment", "Granular")';
+                    });
+            },
+            failure: function (errMsg) {
+                swal.fire("Error", "Operation failed.", "error");
+            },
+            complete: function () {
+                $.LoadingOverlay('hide');
+            }
+        });
+    } 
+
+    function ExecuteFilter(initialPageLoad) { 
+        var dateTo = $('#date-to').val();
+        var dateFrom = $('#date-from').val();
+        var customers = $('#select-customer').select2('data');
+        var productType = $('#select-product-type').val();
+        var search = $('#search').val();
+        var customerNames;
+        if (initialPageLoad == 'yes') { 
+
+        }
+        else {
+            customerNames = customers.map(function (item) {
+                return item['text'];
+            });
+        }
+
+        $('#divResults').LoadingOverlay("show", {
+            image: "",
+            custom: customElement
+        }); 
+        $.ajax({
+            url: '/Granular/SearchEncashment'
+            , type: 'POST' 
+            , data: { Customers: customerNames, dateFrom: dateFrom, dateTo: dateTo, productType: productType, search: search }
+            , dataType: 'html'
+            , success: function (response) {
+                $('#divResults').html(response); 
+            }
+            , complete: function () {
+                $('#divResults').LoadingOverlay('hide');
+            }
+        });
+    }
+
+    function Upload() {
+        ViewUploadFile();
+    }
+
+    function ViewUploadFile() {
+        $.ajax({
+            url: '/Granular/ViewUploadFileEncashment'
+            , type: 'GET'
+            , dataType: 'html'
+            , success: function (response) {
+                $('#modal-content-lg').html(response);
+                $('#modal-popup-lg').modal('show');
+            }
+            , error: function (response) {
+                swal.fire('Error', 'An error occurred while processing the request to the server.', 'error');
+            }
+            , complete: function () {
+
+            }
+        });
+    }
+
+</script>
+
+

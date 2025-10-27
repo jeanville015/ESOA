@@ -1,0 +1,98 @@
+﻿@using ESOA.Model
+@using ESOA.Model.View
+
+@model List<AgentBalancesView> 
+
+@if (@Model.Count > 0)
+{
+    var CustomerNames = Model.Select(x => x.CustomerName);
+    var AgentBalances = Model.Select(x => x.AgentBalances);
+    var AgentBalancesModelCounter = Model.Select(x => (Convert.ToDecimal(x.AgentBalances) - Convert.ToDecimal(x.AgentBalances)));
+
+    <div id="chart"></div>
+
+    <script>
+
+        var options = {
+            series: [{
+                name: 'Advance',
+                data: JSON.parse('@Html.Raw(Json.Serialize(AgentBalances))')
+            },
+            {
+                name: 'Payable',
+                data: JSON.parse('@Html.Raw(Json.Serialize(AgentBalancesModelCounter))')
+            }
+            ],
+            chart: {
+                type: 'bar',
+                height: 440,
+                stacked: true
+            },
+            colors: ['#008FFB', '#FF4560'],
+            plotOptions: {
+                bar: {
+                    borderRadius: 5,
+                    borderRadiusApplication: 'end', // 'around', 'end'
+                    borderRadiusWhenStacked: 'all', // 'all', 'last'
+                    horizontal: true,
+                    barHeight: '80%',
+                },
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                width: 1,
+                colors: ["#fff"]
+            },
+
+            grid: {
+                xaxis: {
+                    lines: {
+                        show: false
+                    }
+                }
+            },
+            yaxis: {
+                stepSize: 1
+            },
+            tooltip: {
+                shared: false,
+                x: {
+                    formatter: function (val) {
+                        return val
+                    }
+                },
+                y: {
+                    formatter: function (val) {
+                        return Math.abs(val) + ""
+                    }
+                }
+            },
+            title: {
+                text: 'Agents Payable to LBC'
+            },
+            xaxis: {
+                categories: JSON.parse('@Html.Raw(Json.Serialize(CustomerNames))'),
+                title: {
+                    text: 'Amount'
+                },
+                labels: {
+                    formatter: function (val) {
+                        return Math.abs(Math.round(val)) + ""
+                    }
+                }
+            },
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+        chart.render();
+
+
+    </script>
+}
+else
+{
+  <h6>No data found.</h6>
+} 
+

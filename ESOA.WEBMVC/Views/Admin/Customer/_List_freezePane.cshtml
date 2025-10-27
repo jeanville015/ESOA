@@ -1,0 +1,144 @@
+﻿@using ESOA.Model      
+
+@model PaginationResponse<AgentListing> 
+
+@if (@Model.Data.Count > 0)
+{
+    @Html.Hidden("TotalRows", @Model.TotalRows)
+    <div class="row">
+      <div class="col-12">
+        @if (Model.FilteredRows > 0)
+        {
+          <ul class="pagination mt-1"></ul>
+        }
+      </div>
+      <div class="col-12">
+        <div class="bg-gray text-right"><strong ><label id="filtered-rows">@Model.FilteredRows</label></strong> of @Model.TotalRows Customer found</div>
+      </div>   
+    </div>
+    <div class="row">
+        <div class="container-fluid">
+            <div class="row flex-nowrap">
+                <!--======Left Pane /freeze pane===================================================================-->
+                <div class="col-auto" style="padding:0 !important;">
+                    <div class="table-responsive">
+                        <table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
+                            <thead>
+                                <tr class="table-secondary">
+                                    <th class="th-sm" style="white-space:nowrap;width:1%;"> Edit </th>
+                                    <th class="th-sm" style="white-space:nowrap;width:1%;"> Delete </th>
+                                    <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Name</th>
+                                    <th class="th-sm search-sortidx" data-sortindex="1" style="cursor:pointer;">Legal Entity Name</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-start">
+
+                                @{
+                                    foreach (AgentListing itm in Model.Data)
+                                    {
+                                        <tr>
+                                            <td class="text-center"><a href="#" onclick="CustomerDetail('@itm.Id');"><i class="fas fa-edit btn-outline-primary"></i></a></td>
+                                            <td class="text-center"><a href="#" onclick="confirmDelete('@itm.Id');"><i class="fas fa-trash btn-outline-primary"></i></a></td>
+                                            <td><label>@itm.Name</label></td>
+                                            <td><label>@itm.LegalEntityName</label></td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--======Right Pane===================================================================-->
+                <div class="col overflow-auto" style="padding:0 !important;">
+                    <div class="table-responsive text-nowrap" style="padding:0 !important;">
+                        <div>
+                            <table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%" style="">
+                                <thead>
+                                    <tr class="table-secondary">
+                                        <th class="th-sm search-sortidx" data-sortindex="2" style="cursor:pointer;">TIN</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="3" style="cursor:pointer;">Address</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="3" style="cursor:pointer;">Sales_Exec_LBC</th>
+                                        <!---->
+                                        <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Email Address</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Depository Account No</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Contact No</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="0" style="cursor:pointer;">Contact Person</th>
+                                        <!---->
+                                        <th class="th-sm search-sortidx" data-sortindex="4" style="cursor:pointer;">Approved AFC</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="5" style="cursor:pointer;">SOA Template</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="6" style="cursor:pointer;">Rate Card</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="7" style="cursor:pointer;">Domestic/International</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="8" style="cursor:pointer;">Country</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="9" style="cursor:pointer;">Transmission Mode</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="10" style="cursor:pointer;">Office Code</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="11" style="cursor:pointer;">Area</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="12" style="cursor:pointer;">SAP Customer ID</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="13" style="cursor:pointer;">SAP Vendor ID - IPP</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="14" style="cursor:pointer;">SAP Vendor ID - PP/SC</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="15" style="cursor:pointer;">SAP Vendor ID - RTA</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="16" style="cursor:pointer;">SAP Vendor ID - SNS</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="17" style="cursor:pointer;">SAP Vendor ID - IPPX</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="18" style="cursor:pointer;">Payment Currency</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="19" style="cursor:pointer;">SF_Mode Of Settlement</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="20" style="cursor:pointer;">Withholding Tax</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="21" style="cursor:pointer;">VAT Status</th>
+                                        <th class="th-sm search-sortidx" data-sortindex="22" style="cursor:pointer;">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-start">
+
+                                    @{
+                                        foreach (AgentListing itm in Model.Data)
+                                        {
+                                            <tr>
+                                                <td><label>@itm.Tin</label></td>
+                                                <td><label>@itm.Address</label></td>
+                                                <td><label>@itm.SalesExec_LBC</label></td>
+                                                <td><a href="#" onclick="EmailAddressList('@itm.Id');"><i class="fas fa-list"></i></a></td>
+                                                <td><a href="#" onclick="DepositoryAccountNoList('@itm.Id');"><i class="fas fa-list"></i></a></td>
+                                                <td><a href="#" onclick="ContactNoList('@itm.Id');"><i class="fas fa-list"></i></a></td>
+                                                <td><a href="#" onclick="ContactPersonList('@itm.Id');"><i class="fas fa-list"></i></a></td>
+                                                <td><label>@itm.ApprovedAFC_str</label></td>
+                                                <td><label>@itm.SoaTemplateName</label></td>
+                                                <td><label>@itm.RateCardName</label></td>
+                                                <td><label>@itm.Domestic_Intl</label></td>
+                                                <td><label>@itm.Country</label></td>
+                                                <td><label>@itm.TransmissionMode</label></td>
+                                                <td><label>@itm.OfficeCode</label></td>
+                                                <td><label>@itm.Area</label></td>
+                                                <td><label>@itm.SAPCustomerId</label></td>
+                                                <td><label>@itm.SAPVendorId_IPP</label></td>
+                                                <td><label>@itm.SAPVendorId_PP_SC</label></td>
+                                                <td><label>@itm.SAPVendorId_RTA</label></td>
+                                                <td><label>@itm.SAPVendorId_SNS</label></td>
+                                                <td><label>@itm.SAPVendorId_IPPX</label></td>
+                                                <td><label>@itm.PaymentCurrency</label></td>
+                                                <td><label>@itm.SFModeOfSettlement</label></td>
+                                                <td><label>@itm.WithHoldingTax</label></td>
+                                                <td><label>@itm.VatStatus</label></td>
+                                                <td><label>@itm.Status</label></td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div> 
+        </div> 
+    </div> 
+
+    <ul class="pagination pagination-secondary">
+                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                  </ul> 
+}
+else
+{
+  <h6>No data found.</h6>
+} 

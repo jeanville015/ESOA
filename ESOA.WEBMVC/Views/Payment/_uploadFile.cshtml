@@ -1,0 +1,85 @@
+﻿
+
+<div class="modal-header">
+    <h5 class="modal-title"><label for="formFile" class="form-label">Choose Excel file to upload</label></h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <div class="mb-3">
+        <div class="row g-2">  
+            <div class="col-sm-10">
+                <input class="form-control" type="file" id="formFile">
+            </div>
+            <div class="col-sm-2">
+                <button class="btn btn-primary" id="btnUploadFile"><i class="fas fa-file-upload"></i>upload</button>
+            </div> 
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>
+
+<script type="text/javascript">
+    var fileList = [];
+
+    $(document).ready(function () { 
+
+        $('#btnUploadFile').click(function (evt) {
+            evt.preventDefault();  
+
+            $.LoadingOverlay("show", {
+                image: "",
+                custom: customElement
+            });
+
+            //uploadFile();
+            if ($.inArray($("#formFile").val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                swal.fire(
+                  'Upload Cancelled',
+                  'file format is invalid!',
+                  'error'
+                );
+            }else{
+                fileList.push($('#formFile')[0].files[0]);
+                
+                var fd_uploadedFiles = new FormData();
+                //get all uploaded files from array
+                for (let i = 0; i < fileList.length; i++) {
+                    //fd_uploadedFiles.append('[' + i + '].fileName', fileList[i].name,)
+                    fd_uploadedFiles.append(fileList[i].name, fileList[i]);
+                }
+
+                $.ajax({
+                    url: '/Payment/UploadFilePayment',
+                    type: 'POST',
+                    data: fd_uploadedFiles,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function () {
+                    },
+                    success: function (response) {
+                        $.LoadingOverlay('hide');
+                        if (!response.status) {
+                            swal.fire("Error", response.reason, "error");
+                        }
+                        else {
+                            swal.fire("Success!", "Process done.", "success")
+                                .then(() => {
+                                    //nothing
+                                });
+                            $('#modal-popup-lg').modal('hide');
+                        }
+                    },
+                    failure: function (errMsg) {
+                        $.LoadingOverlay('hide');
+                        swal.fire("Error", "Server error", "error");
+                    }
+                    , complete: function () {
+                        $.LoadingOverlay('hide');
+                    }
+                });
+            }  
+        });
+    }); 
+</script>
